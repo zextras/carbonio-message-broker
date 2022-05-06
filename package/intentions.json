@@ -1,0 +1,14 @@
+{
+  "Kind": "service-intentions",
+  "Name": "carbonio-message-broker",
+  "Sources": [
+    {
+      "Name": "carbonio-proxy",
+      "Action": "allow"
+    },
+    {
+      "Name": "carbonio-chats",
+      "Action": "allow"
+    }
+  ]
+}
