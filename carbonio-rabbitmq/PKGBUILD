@@ -1,0 +1,58 @@
+targets=(
+  "ubuntu"
+  "centos"
+)
+pkgname="carbonio-rabbitmq"
+pkgver="3.10.1"
+pkgrel="1"
+pkgdesc="Carbonio rabbitmq package"
+pkgdesclong=(
+  "Carbonio rabbitmq package"
+)
+maintainer="Zextras <packages@zextras.com>"
+arch="amd64"
+license=("spdx:AGPL-3.0-only")
+section="admin"
+priority="optional"
+url="https://www.zextras.com/"
+makedepends:apt=(
+  "python"
+  "python3-pip"
+  "erlang-nox"
+  "erlang-dev"
+  "erlang-src"
+  "libxslt1.1"
+  "xmlto"
+  "wget"
+)
+sources=(
+  "https://github.com/rabbitmq/rabbitmq-server/archive/v${pkgver}.tar.gz"
+)
+hashsums=(
+  "skip"
+)
+
+build:apt() {
+  pip install simplejson
+  wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
+  apt update
+  apt install --no-install-recommends -y esl-erlang elixir
+  cd "${srcdir}/rabbitmq-server-${pkgver}"
+  make
+}
+
+package() {
+  make install
+}
+
+postinst() {
+
+}
+
+prerm() {
+
+}
+
+postrm() {
+
+}
