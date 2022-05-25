@@ -5,7 +5,7 @@
   "output": "artifacts",
   "projects": [
     {
-      "name": "carbonio-message-broker"
+      "name": "carbonio-rabbitmq"
     }
   ]
 }
