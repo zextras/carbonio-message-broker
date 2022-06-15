@@ -5,7 +5,15 @@
   "output": "artifacts",
   "projects": [
     {
-      "name": "carbonio-message-broker"
+      "name": "erlang",
+      "install": true
+    },
+    {
+      "name": "elixir",
+      "install": true
+    },
+    {
+      "name": "message-broker"
     }
   ]
 }
