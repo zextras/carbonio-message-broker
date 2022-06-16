@@ -99,7 +99,7 @@ package() {
   mkdir -p "${pkgdir}/var/lib/rabbitmq/mnesia"
   mkdir -p "${pkgdir}/var/log/rabbitmq"
 
-  cd "${srcdir}../../broker/message-broker"
+  cd "${srcdir}"/../../broker/message-broker
   rsync -a etc/ "${pkgdir}/etc/"
 
   # Executables symlinks
