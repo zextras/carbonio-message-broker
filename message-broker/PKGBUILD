@@ -12,9 +12,7 @@ license=("MPL")
 # backup=("etc/rabbitmq/rabbitmq-env.conf")
 depends:apt=(
   "adduser"
-  "erlang-nox"
-  "erlang-dev"
-  "erlang-src"
+  "carbonio-erlang"
   "jq"
   "locales-all"
   "logrotate"
