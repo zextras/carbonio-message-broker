@@ -50,7 +50,11 @@ sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zext
 sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
-                sh 'sudo pacur build ubuntu-focal .'
+                sh '''
+                  mkdir /tmp/broker
+                  mv * /tmp/broker
+                  sudo pacur build ubuntu-focal /tmp/broker
+                '''
                 stash includes: 'artifacts/', name: 'artifacts-ubuntu-focal'
             }
             post {
@@ -68,7 +72,11 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
             }
             steps {
                 unstash 'project'
-                sh 'sudo pacur build rocky-8 .'
+                sh '''
+                  mkdir /tmp/broker
+                  mv * /tmp/broker
+                  sudo pacur build rocky-8 /tmp/broker
+                '''
                 stash includes: 'artifacts/', name: 'artifacts-rocky-8'
             }
             post {
@@ -98,7 +106,11 @@ sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zext
 sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
-                sh 'sudo pacur build ubuntu-bionic .'
+                sh '''
+                  mkdir /tmp/broker
+                  mv * /tmp/broker
+                  sudo pacur build ubuntu-bionic /tmp/broker
+                '''
                 stash includes: 'artifacts/', name: 'artifacts-ubuntu-bionic'
             }
             post {
