@@ -12,7 +12,9 @@ license=("MPL")
 # backup=("etc/rabbitmq/rabbitmq-env.conf")
 depends:apt=(
   "adduser"
-  "carbonio-erlang"
+  "erlang-nox"
+  "erlang-dev"
+  "erlang-src"
   "jq"
   "locales-all"
   "logrotate"
@@ -109,21 +111,22 @@ package() {
     ln -s "../lib/rabbitmq_server-3.10.1/sbin/$(basename $file)" "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin/$(basename $file)"
   done
 
-  install -Dm 644 "${srcdir}"/intentions-http.json \
-   "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-http.json"
-   install -Dm 644 "${srcdir}"/intentions-webstomp.json \
-   "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-webstomp.json"
-  install -Dm 644 "${srcdir}"/policies.json \
-   "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
-  install -Dm 644 "${srcdir}"/service-protocol-http.json \
-   "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-http.json"
-  install -Dm 644 "${srcdir}"/service-protocol-webstomp.json \
-     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-webstomp.json"
-  install -Dm 644 carbonio-message-broker.service "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
+  cd ${srcdir}
+  install -Dm 644 intentions-http.json \
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-http.json"
+  install -Dm 644 intentions-webstomp.json \
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-webstomp.json"
+  install -Dm 644 policies.json \
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
+  install -Dm 644 service-protocol-http.json \
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-http.json"
+  install -Dm 644 service-protocol-webstomp.json \
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-webstomp.json"
+  install -Dm 644 carbonio-message-broker.service
+    "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
   install -Dm 644 carbonio-message-broker-http-sidecar.service
     "${pkgdir}/lib/systemd/system/carbonio-message-broker-http-sidecar.service"
   install -Dm 644 carbonio-message-broker-webstomp-sidecar.service
-    "${pkgdir}/lib/systemd/system/carbonio-message-broker-webstomp-sidecar.service"
     "${pkgdir}/lib/systemd/system/carbonio-message-broker-webstomp-sidecar.service"
   install -Dm 644 carbonio-message-broker-setup.sh
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
