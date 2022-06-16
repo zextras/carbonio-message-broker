@@ -15,8 +15,8 @@ LimitNOFILE=32768
 Restart=on-failure
 RestartSec=10
 WorkingDirectory=/var/lib/rabbitmq
-ExecStart=/usr/lib/rabbitmq/bin/rabbitmq-server
-ExecStop=/usr/lib/rabbitmq/bin/rabbitmqctl shutdown
+ExecStart=/opt/zextras/common/lib/rabbitmq/bin/rabbitmq-server
+ExecStop=/opt/zextras/common/lib/rabbitmq/bin/rabbitmqctl shutdown
 SuccessExitStatus=69
 
 [Install]

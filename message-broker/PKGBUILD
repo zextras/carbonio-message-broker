@@ -104,7 +104,7 @@ package() {
 
   # Executables symlinks
   mkdir -p "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
-  for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/sbin/*
+  for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/*
   do
     ln -s "../lib/rabbitmq_server-3.10.1/sbin/$(basename $file)" "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin/$(basename $file)"
   done
