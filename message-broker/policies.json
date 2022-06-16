@@ -1,7 +1,10 @@
 {
   "key_prefix": [
     {
-      "carbonio-message-broker/": {
+      "carbonio-message-broker-http/": {
+        "policy": "read"
+      },
+      "carbonio-message-broker-webstomp/": {
         "policy": "read"
       }
     }
@@ -15,10 +18,16 @@
   ],
   "service": [
     {
-      "carbonio-message-broker": {
+      "carbonio-message-broker-http": {
         "policy": "write"
       },
-      "carbonio-message-broker-sidecar-proxy": {
+      "carbonio-message-broker-webstomp": {
+        "policy": "write"
+      },
+      "carbonio-message-broker-http-sidecar-proxy": {
+        "policy": "write"
+      },
+      "carbonio-message-broker-webstomp-sidecar-proxy": {
         "policy": "write"
       }
     }

@@ -18,11 +18,11 @@ function build-ubuntu-artifact() {
   if [ "$no_docker" = true ]; then
     pacur build ubuntu
   else
-    docker run \
+    docker run -it \
       --rm --entrypoint "" \
       -v "$(pwd)":/tmp/broker \
       -v "$HOME/.m2/settings.xml":/tmp/settings.xml \
-      registry.dev.zextras.com/jenkins/pacur/ubuntu-20.04:v1 /bin/bash -c 'pacur build ubuntu /tmp/broker'
+      registry.dev.zextras.com/jenkins/pacur/ubuntu-20.04:v1 /bin/bash # -c 'pacur build ubuntu /tmp/broker'
   fi
 }
 

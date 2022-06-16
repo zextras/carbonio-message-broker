@@ -38,10 +38,30 @@ makedepends:apt=(
 
 sources=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.1/rabbitmq-server-3.10.1.tar.xz"
+  "carbonio-message-broker"
+  "carbonio-message-broker-setup.sh"
+  "intentions-http.json"
+  "intentions-webstomp.json"
+  "policies.json"
+  "service-protocol-http.json"
+  "service-protocol-webstomp.json"
+  "carbonio-message-broker.service"
+  "carbonio-message-broker-http-sidecar.service"
+  "carbonio-message-broker-webstomp-sidecar.service"
 )
 
 hashsums=(
   "13712b9cc86beede0eccd19503480ad393d7d211133c864208b4384a62d34cfb"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
 )
 
 build() {
@@ -70,16 +90,45 @@ build() {
   # install -Dm 644 "${srcdir}/rabbitmq.logrotate" "${pkgdir}/etc/logrotate.d/rabbitmq"
 
   # chown -R 197:0 "${pkgdir}/etc/rabbitmq"
+}
 
-  cd "${srcdir}"/rabbitmq-server-3.10.1/deps/rabbitmq_management
-  install -Dm 755 bin/rabbitmqadmin -t "${pkgdir}/opt/zextras/common/bin"
+package() {
+  cd "${srcdir}"/rabbitmq-server-3.10.1
+  install -Dm 755 deps/rabbitmq_management/bin/rabbitmqadmin -t "${pkgdir}/opt/zextras/common/bin"
 
-  # install -Dm 644 "${srcdir}"/intentions.json \
-  #   "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions.json"
-  # install -Dm 644 "${srcdir}"/policies.json \
-  #   "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
-  # install -Dm 644 "${srcdir}"/service-protocol.json \
-  #   "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
+  mkdir -p "${pkgdir}/var/lib/rabbitmq/mnesia"
+  mkdir -p "${pkgdir}/var/log/rabbitmq"
+
+  cd "${srcdir}../../broker/message-broker"
+  rsync -a etc/ "${pkgdir}/etc/"
+
+  # Executables symlinks
+  mkdir -p "${pkgdir}/usr/lib/rabbitmq/bin"
+  for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/sbin/*
+  do
+    ln -s "../lib/rabbitmq_server-3.10.1/sbin/$(basename $file)" "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin/$(basename $file)"
+  done
+
+  install -Dm 644 "${srcdir}"/intentions-http.json \
+   "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-http.json"
+   install -Dm 644 "${srcdir}"/intentions-webstomp.json \
+   "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-webstomp.json"
+  install -Dm 644 "${srcdir}"/policies.json \
+   "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
+  install -Dm 644 "${srcdir}"/service-protocol-http.json \
+   "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-http.json"
+  install -Dm 644 "${srcdir}"/service-protocol-webstomp.json \
+     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-webstomp.json"
+  install -Dm 644 carbonio-message-broker.service "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
+  install -Dm 644 carbonio-message-broker-http-sidecar.service
+    "${pkgdir}/lib/systemd/system/carbonio-message-broker-http-sidecar.service"
+  install -Dm 644 carbonio-message-broker-webstomp-sidecar.service
+    "${pkgdir}/lib/systemd/system/carbonio-message-broker-webstomp-sidecar.service"
+    "${pkgdir}/lib/systemd/system/carbonio-message-broker-webstomp-sidecar.service"
+  install -Dm 644 carbonio-message-broker-setup.sh
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
+  install -Dm 755 carbonio-message-broker "${pkgdir}/usr/bin/carbonio-message-broker"
+
 }
 
 postinst() {
@@ -93,6 +142,11 @@ postinst() {
     systemctl enable carbonio-message-broker.service >/dev/null 2>&1 || :
     systemctl enable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
   fi
+
+  chown -R carbonio-message-broker:carbonio-message-broker /etc/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /usr/lib/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /var/lib/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /var/log/rabbitmq
 
   echo "======================================================"
   echo "Carbonio message broker installed successfully!"
