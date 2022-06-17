@@ -112,6 +112,8 @@ package() {
   cd "${srcdir}"/../../broker/message-broker
   rsync -a etc/ "${pkgdir}/etc/"
 
+  #TODO Authentication
+
   # Executables symlinks
   mkdir -p "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
   for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/*
@@ -159,6 +161,8 @@ postinst() {
     systemctl enable carbonio-message-broker.service >/dev/null 2>&1 || :
     systemctl enable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
   fi
+
+   #TODO Find a way to change the default rabbitmq guest user credentials
 
   chown -R carbonio-message-broker:carbonio-message-broker /etc/rabbitmq
   chown -R carbonio-message-broker:carbonio-message-broker /usr/lib/rabbitmq
