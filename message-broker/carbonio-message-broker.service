@@ -18,6 +18,7 @@ WorkingDirectory=/var/lib/rabbitmq
 ExecStart=/opt/zextras/common/lib/rabbitmq/bin/rabbitmq-server
 ExecStop=/opt/zextras/common/lib/rabbitmq/bin/rabbitmqctl shutdown
 SuccessExitStatus=69
+Environment=PATH=/opt/zextras/common/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 [Install]
 WantedBy=multi-user.target

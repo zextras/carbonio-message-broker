@@ -95,6 +95,7 @@ build() {
 package() {
   cd "${srcdir}"/rabbitmq-server-3.10.1
   install -Dm 755 deps/rabbitmq_management/bin/rabbitmqadmin -t "${pkgdir}/opt/zextras/common/bin"
+  rm -f INSTALL LICENSE-*
 
   mkdir -p "${pkgdir}/var/lib/rabbitmq/mnesia"
   mkdir -p "${pkgdir}/var/log/rabbitmq"
@@ -106,7 +107,8 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
   for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/*
   do
-    ln -s "../lib/rabbitmq_server-3.10.1/sbin/$(basename $file)" "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin/$(basename $file)"
+    # move this to opt zextras common bin
+    ln -s "../lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/$(basename $file)" "${pkgdir}/opt/zextras/common/bin/$(basename $file)"
   done
 
   cd ${srcdir}
@@ -137,7 +139,7 @@ postinst() {
   getent group 'carbonio-message-broker' >/dev/null ||
     groupadd -r 'carbonio-message-broker'
   getent passwd 'carbonio-message-broker' >/dev/null ||
-    useradd -r -M -g 'carbonio-message-broker' -s /sbin/nologin 'carbonio-message-broker'
+    useradd -r -M -g 'carbonio-message-broker' -d /var/lib/rabbitmq -s /sbin/nologin 'carbonio-message-broker'
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
