@@ -27,7 +27,7 @@ config_variant() {
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
 echo -n "Insert the cluster credential password: "
-export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
+export CONSUL_ACL_TOKEN=$(service-discover bootstrap-token --setup)
 EXIT_CODE="$?"
 echo ""
 if [[ "${EXIT_CODE}" != "0" ]]; then
@@ -69,7 +69,7 @@ if [[ ! -f "/etc/carbonio/message-broker/service-discover/token" ]]; then
     mkdir -p /etc/systemd/system/carbonio-message-broker.service.d/
     cat >/etc/systemd/system/carbonio-message-broker.service.d/override.conf <<EOF
 [Service]
-Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-broker/service-discover/token)"
+Environment="CONSUL_ACL_TOKEN=$(cat /etc/carbonio/message-broker/service-discover/token)"
 EOF
     chmod 0600 /etc/systemd/system/carbonio-message-broker.service.d/override.conf
     systemctl daemon-reload
@@ -78,7 +78,7 @@ fi
 consul reload
 
 # Limit token visibility as much as possible
-export -n CONSUL_HTTP_TOKEN
+export -n CONSUL_ACL_TOKEN
 
 systemctl restart carbonio-message-broker.service
 systemctl restart carbonio-message-broker-http-sidecar.service
