@@ -69,6 +69,8 @@ hashsums=(
   "skip"
   "skip"
   "skip"
+  "skip"
+  "skip"
 )
 
 build() {
