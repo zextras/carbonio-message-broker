@@ -27,7 +27,7 @@ config_variant() {
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
 echo -n "Insert the cluster credential password: "
-export CONSUL_ACL_TOKEN=$(service-discover bootstrap-token --setup)
+export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
 EXIT_CODE="$?"
 echo ""
 if [[ "${EXIT_CODE}" != "0" ]]; then
@@ -78,7 +78,7 @@ fi
 consul reload
 
 # Limit token visibility as much as possible
-export -n CONSUL_ACL_TOKEN
+export -n CONSUL_HTTP_TOKEN
 
 systemctl restart carbonio-message-broker.service
 systemctl restart carbonio-message-broker-http-sidecar.service

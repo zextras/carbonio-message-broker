@@ -11,5 +11,5 @@ services {
   }
 
   name = "carbonio-message-broker-http"
-  port = 10000
+  port = 10001
 }
