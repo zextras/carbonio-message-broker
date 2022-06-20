@@ -186,6 +186,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
+                        ]
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
@@ -193,9 +194,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
         }
         stage('Upload To Devel') {
             when {
-                anyOf {
-                    branch "main"
-                }
+                branch "main"
             }
             steps {
                 unstash 'artifacts-ubuntu-focal'
@@ -227,6 +226,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                                 "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
+                        ]
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
