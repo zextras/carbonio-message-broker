@@ -1,0 +1,10 @@
+{
+  "Kind": "service-intentions",
+  "Name": "carbonio-message-proxy-webstomp",
+  "Sources": [
+    {
+      "Name": "carbonio-proxy",
+      "Action": "allow"
+    }
+  ]
+}
