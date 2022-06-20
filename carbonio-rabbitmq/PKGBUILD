@@ -1,0 +1,97 @@
+targets=(
+  "ubuntu"
+  "centos"
+)
+pkgname="carbonio-rabbitmq"
+pkgver="3.10.1"
+pkgrel="1"
+pkgdesc="Carbonio rabbitmq package"
+pkgdesclong=(
+  "Carbonio rabbitmq package"
+)
+maintainer="Zextras <packages@zextras.com>"
+arch="amd64"
+license=("spdx:AGPL-3.0-only")
+section="admin"
+priority="optional"
+url="https://www.zextras.com/"
+makedepends:apt=(
+  "python"
+  "python3-pip"
+  "erlang-nox"
+  "erlang-dev"
+  "erlang-src"
+  "libxslt1.1"
+  "xmlto"
+  "wget"
+)
+depends=(
+  "carbonio-erlang-nox"
+  "adduser"
+  "logrotate"
+  "init-system-helpers"
+)
+sources=(
+  "https://github.com/rabbitmq/rabbitmq-server/archive/v${pkgver}.tar.gz"
+)
+hashsums=(
+  "skip"
+)
+
+build:apt() {
+#   pip install simplejson
+#   wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
+#   apt update
+#   apt install --no-install-recommends -y esl-erlang elixir
+#   cd "${srcdir}/rabbitmq-server-${pkgver}"
+#   RABBITMQ_VERSION=${pkgver} make package-generic-unix PROJECT_VERSION=${pkgver}
+}
+
+package() {
+  cd "${srcdir}/rabbitmq-server-${pkgver}/PACKAGES"
+  tar -xvf rabbitmq-server-generic-unix-${pkgver}.tar.xz
+  cd "rabbitmq_server-${pkgver}"
+
+  rsync -a etc/ "${pkgdir}/etc/"
+  mkdir -p "${pkgdir}/usr/share/"
+  rsync -a share/ "${pkgdir}/usr/share/"
+  mkdir -p "${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/escript"
+  rsync -a escript/ "${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/escript"
+  mkdir -p "${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/sbin"
+  rsync -a sbin/ "${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/sbin"
+  mkdir -p "${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/plugins"
+  rsync -a plugins/ "${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/plugins"
+  mkdir -p "${pkgdir}/var/lib/rabbitmq/mnesia"
+  mkdir -p "${pkgdir}/var/log/rabbitmq"
+
+  # Executables symlinks
+  mkdir -p "${pkgdir}/usr/lib/rabbitmq/bin"
+  for file in ${pkgdir}/usr/lib/rabbitmq/lib/rabbitmq_server-${pkgver}/sbin/*
+  do
+    ln -s "../lib/rabbitmq_server-${pkgver}/sbin/$(basename $file)" "${pkgdir}/usr/lib/rabbitmq/bin/$(basename $file)"
+  done
+}
+
+postinst() {
+  getent group 'carbonio-message-broker' >/dev/null ||
+    groupadd -r 'carbonio-message-broker'
+  getent passwd 'carbonio-message-broker' >/dev/null ||
+    useradd -r -M -g 'carbonio-message-broker' -s /sbin/nologin 'carbonio-message-broker'
+  chown -R carbonio-message-broker:carbonio-message-broker /etc/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /usr/lib/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /var/lib/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /var/log/rabbitmq
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-message-broker.service >/dev/null 2>&1 || :
+  fi
+}
+
+prerm() {
+
+}
+
+postrm() {
+
+}
