@@ -4,6 +4,9 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
+CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
+MAIN_SERVICE_NAME="carbonio-chats"
+
 # decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
@@ -56,7 +59,7 @@ set -e
 config_variant "http"
 config_variant "webstomp"
 
-if [[ ! -f "/etc/carbonio/message-broker/service-discover/token" ]]; then
+if [[ ! -f ${CONSUL_TOKEN_PATH} ]]; then
     # Create the token, this is unique for every variant
     consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for
     carbonio-message-broker/$(hostname -A)" |
@@ -74,6 +77,11 @@ EOF
     chmod 0600 /etc/systemd/system/carbonio-message-broker.service.d/override.conf
     systemctl daemon-reload
 fi
+
+EVENT_DISPATCHER_USERNAME="carbonio-message-broker"
+consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/event-dispatcher-username" "${EVENT_DISPATCHER_USERNAME}"
+# avoid passing the password as argument, always as ENV
+openssl rand -hex 16 | tr -d '\n' | consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/event-dispatcher-password"
 
 consul reload
 
