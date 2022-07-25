@@ -79,7 +79,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     }
                     agent {
                         node {
-                            label 'pacur-agent-centos-8-v1'
+                            label 'pacur-agent-rocky-8-v1'
                         }
                     }
                     steps {
@@ -94,50 +94,6 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     post {
                         always {
                             archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
-                        }
-                        failure {
-                            script {
-                                if ("main".equals(env.BRANCH_NAME)) {
-                                    sendFailureEmail(STAGE_NAME)
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('Ubuntu 18') {
-                    when {
-                        expression { false }
-                    }
-                    agent {
-                        node {
-                            label 'pacur-agent-ubuntu-18.04-v1'
-                        }
-                    }
-                    steps {
-                        unstash 'project'
-                        withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-                            passwordVariable: 'SECRET',
-                            usernameVariable: 'USERNAME')]) {
-                                sh 'echo "machine zextras.jfrog.io" >> auth.conf'
-                                sh 'echo "login $USERNAME" >> auth.conf'
-                                sh 'echo "password $SECRET" >> auth.conf'
-                                sh 'sudo mv auth.conf /etc/apt'
-                        }
-                        sh '''
-sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zextras.list
-sudo mv zextras.list /etc/apt/sources.list.d/
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
-'''
-                        sh '''
-                          mkdir /tmp/broker
-                          mv * /tmp/broker
-                          sudo pacur build ubuntu-bionic /tmp/broker
-                        '''
-                        stash includes: 'artifacts/', name: 'artifacts-ubuntu-bionic'
-                    }
-                    post {
-                        always {
-                            archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
                         }
                         failure {
                             script {
