@@ -123,12 +123,12 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     uploadSpec = '''{
                         "files": [
                             {
-                                "pattern": "artifacts/carbonio-erlang-*focal*.deb",
+                                "pattern": "artifacts/carbonio-erlang_*focal*.deb",
                                 "target": "ubuntu-playground/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
-                                "pattern": "artifacts/carbonio-message-broker-*focal*.deb",
+                                "pattern": "artifacts/carbonio-message-broker_*focal*.deb",
                                 "target": "ubuntu-playground/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
@@ -163,12 +163,12 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     uploadSpec = '''{
                         "files": [
                             {
-                                "pattern": "artifacts/carbonio-erlang-*focal*.deb",
+                                "pattern": "artifacts/carbonio-erlang_*focal*.deb",
                                 "target": "ubuntu-devel/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
-                                "pattern": "artifacts/carbonio-message-broker-*focal*.deb",
+                                "pattern": "artifacts/carbonio-message-broker_*focal*.deb",
                                 "target": "ubuntu-devel/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
@@ -207,12 +207,12 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     uploadSpec = '''{
                         "files": [
                             {
-                                "pattern": "artifacts/carbonio-erlang-*focal*.deb",
+                                "pattern": "artifacts/carbonio-erlang_*focal*.deb",
                                 "target": "ubuntu-rc/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
-                                "pattern": "artifacts/carbonio-message-broker-*focal*.deb",
+                                "pattern": "artifacts/carbonio-message-broker_*focal*.deb",
                                 "target": "ubuntu-rc/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             }
