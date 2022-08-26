@@ -6,6 +6,12 @@
       },
       "carbonio-message-broker-webstomp/": {
         "policy": "read"
+      },
+      "carbonio-message-broker-clustered/": {
+        "policy": "write"
+      },
+      "carbonio-message-broker/": {
+        "policy": "write"
       }
     }
   ],
@@ -28,6 +34,16 @@
         "policy": "write"
       },
       "carbonio-message-broker-webstomp-sidecar-proxy": {
+        "policy": "write"
+      },
+      "carbonio-message-broker-clustered": {
+        "policy": "write"
+      }
+    }
+  ],
+  "session_prefix": [
+    {
+      "": {
         "policy": "write"
       }
     }

@@ -3,8 +3,8 @@ Description=Erlang Port Mapper Daemon
 
 [Service]
 EnvironmentFile=/etc/conf.d/epmd
-ExecStart=/usr/bin/epmd -daemon $EPMD_OPTS
-ExecStop=/usr/bin/epmd -kill
+ExecStart=/opt/zextras/common/lib/erlang/bin/epmd -daemon $EPMD_OPTS
+ExecStop=/opt/zextras/common/lib/erlang/bin/epmd -kill
 Type=forking
 
 [Install]
