@@ -49,6 +49,7 @@ sources=(
   "carbonio-message-broker.service"
   "carbonio-message-broker-http-sidecar.service"
   "carbonio-message-broker-webstomp-sidecar.service"
+  "carbonio-message-broker-bootstrap"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-message-broker-http.hcl"
@@ -59,6 +60,7 @@ backup=(
 )
 hashsums=(
   "13712b9cc86beede0eccd19503480ad393d7d211133c864208b4384a62d34cfb"
+  "skip"
   "skip"
   "skip"
   "skip"
@@ -147,7 +149,7 @@ package() {
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
   install -Dm 755 carbonio-message-broker \
     "${pkgdir}/usr/bin/carbonio-message-broker"
-
+  install -Dm 755 carbonio-chats-messaging-db-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-bootstrap"
 }
 
 postinst() {

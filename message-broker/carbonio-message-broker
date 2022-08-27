@@ -80,33 +80,6 @@ consul reload
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 
-get_consul_kv() {
-  KEY=$1
-  CONSUL_VALUE=$(consul kv get -token-file="/etc/carbonio/message-broker/service-discover/token" "$KEY")
-  if [[ "$?" != "0" ]]; then
-    CONSUL_VALUE=""
-  fi
-}
-
-TMP_PATH=$PATH
-export PATH="$PATH:/opt/zextras/common/bin"
-get_consul_kv "carbonio-message-broker/username"; USERNAME=$CONSUL_VALUE
-get_consul_kv "carbonio-message-broker/password"; PASSWORD=$CONSUL_VALUE
-RESULT=999
-if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
-  rabbitmqctl authenticate_user "$USERNAME" "$PASSWORD"
-  RESULT=$?
-fi
-
-if [[ "$RESULT" != "0" ]]; then
-  consul kv put -token-file="/etc/carbonio/message-broker/service-discover/token" "carbonio-message-broker/username" "carbonio-message-broker"
-  PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
-  consul kv put -token-file="/etc/carbonio/message-broker/service-discover/token" "carbonio-message-broker/password" "$PASSWORD"
-  rabbitmqctl add_user carbonio-message-broker "$PASSWORD"
-  rabbitmqctl set_permissions -p "/" "carbonio-message-broker" ".*" ".*" ".*"
-fi
-PATH=$TMP_PATH
-
 systemctl restart carbonio-message-broker.service
 systemctl restart carbonio-message-broker-http-sidecar.service
 systemctl restart carbonio-message-broker-webstomp-sidecar.service
