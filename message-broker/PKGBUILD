@@ -149,7 +149,7 @@ package() {
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
   install -Dm 755 carbonio-message-broker \
     "${pkgdir}/usr/bin/carbonio-message-broker"
-  install -Dm 755 carbonio-chats-messaging-db-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-bootstrap"
+  install -Dm 755 carbonio-message-broker-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-bootstrap"
 }
 
 postinst() {
