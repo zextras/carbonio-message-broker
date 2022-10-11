@@ -39,32 +39,20 @@ sources=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.1/rabbitmq-server-3.10.1.tar.xz"
   "carbonio-message-broker"
   "carbonio-message-broker-setup.sh"
-  "carbonio-message-broker-http.hcl"
-  "carbonio-message-broker-webstomp.hcl"
-  "intentions-http.json"
-  "intentions-webstomp.json"
+  "intentions.json"
   "policies.json"
-  "service-protocol-http.json"
-  "service-protocol-webstomp.json"
+  "service-protocol.json"
   "carbonio-message-broker.service"
-  "carbonio-message-broker-http-sidecar.service"
-  "carbonio-message-broker-webstomp-sidecar.service"
+  "carbonio-message-broker-sidecar.service"
   "carbonio-message-broker-bootstrap"
 )
 backup=(
-  "etc/zextras/service-discover/carbonio-message-broker-http.hcl"
-  "etc/zextras/service-discover/carbonio-message-broker-webstomp.hcl"
   "etc/rabbitmq/rabbitmq.conf"
   "etc/rabbitmq/rabbitmq-env.conf"
   "etc/rabbitmq/enabled_plugins"
 )
 hashsums=(
   "13712b9cc86beede0eccd19503480ad393d7d211133c864208b4384a62d34cfb"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
   "skip"
   "skip"
   "skip"
@@ -114,8 +102,6 @@ package() {
   cd "${srcdir}"/../../broker/message-broker
   rsync -a etc/ "${pkgdir}/etc/"
 
-  #TODO Authentication
-
   # Executables symlinks
   mkdir -p "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
   for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/*
@@ -125,26 +111,16 @@ package() {
   done
 
   cd ${srcdir}
-  install -Dm 644 carbonio-message-broker-http.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-message-broker-http.hcl"
-  install -Dm 644 carbonio-message-broker-webstomp.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-message-broker-webstomp.hcl"
   install -Dm 644 intentions-http.json \
-    "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-http.json"
-  install -Dm 644 intentions-webstomp.json \
-    "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions-webstomp.json"
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions.json"
   install -Dm 644 policies.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
   install -Dm 644 service-protocol-http.json \
-    "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-http.json"
-  install -Dm 644 service-protocol-webstomp.json \
-    "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol-webstomp.json"
+    "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
   install -Dm 644 carbonio-message-broker.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
   install -Dm 644 carbonio-message-broker-http-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-broker-http-sidecar.service"
-  install -Dm 644 carbonio-message-broker-webstomp-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-broker-webstomp-sidecar.service"
+    "${pkgdir}/lib/systemd/system/carbonio-message-broker-sidecar.service"
   install -Dm 644 carbonio-message-broker-setup.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
   install -Dm 755 carbonio-message-broker \

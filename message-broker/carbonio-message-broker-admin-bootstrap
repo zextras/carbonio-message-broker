@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAIN_SERVICE_NAME="carbonio-message-broker"
+ADMIN_USER="carbonio-message-broker-admin"
 CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
 RABBITMQ_COMMANDS_FOLDER="/opt/zextras/common/bin"
 
@@ -20,8 +20,8 @@ get_consul_kv() {
 
 TMP_PATH=$PATH
 export PATH="$PATH:$RABBITMQ_COMMANDS_FOLDER"
-get_consul_kv "$MAIN_SERVICE_NAME/username"; USERNAME=$CONSUL_VALUE
-get_consul_kv "$MAIN_SERVICE_NAME/password"; PASSWORD=$CONSUL_VALUE
+get_consul_kv "$ADMIN_USER/username"; USERNAME=$CONSUL_VALUE
+get_consul_kv "$ADMIN_USER/password"; PASSWORD=$CONSUL_VALUE
 RESULT=999
 if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
   rabbitmqctl authenticate_user "$USERNAME" "$PASSWORD"
@@ -29,12 +29,13 @@ if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
 fi
 
 if [[ "$RESULT" != "0" ]]; then
-  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/username" "$MAIN_SERVICE_NAME"
+  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$ADMIN_USER/username" "$ADMIN_USER"
   PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
-  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/password" "$PASSWORD"
-  rabbitmqctl add_user $MAIN_SERVICE_NAME "$PASSWORD"
-  rabbitmqctl set_permissions -p "/" "$MAIN_SERVICE_NAME" ".*" ".*" ".*"
+  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$ADMIN_USER/password" "$PASSWORD"
+  rabbitmqctl add_user $ADMIN_USER "$PASSWORD"
+  rabbitmqctl set_permissions -p "/" "$ADMIN_USER" ".*" ".*" ".*"
+  rabbitmqctl set_user_tags "$ADMIN_USER" administrator
 fi
 export PATH=$TMP_PATH
 
-echo "Carbonio Message Broker default user added."
+echo "Carbonio Message Broker administration user added."

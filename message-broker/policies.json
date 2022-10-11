@@ -1,15 +1,6 @@
 {
   "key_prefix": [
     {
-      "carbonio-message-broker-http/": {
-        "policy": "read"
-      },
-      "carbonio-message-broker-webstomp/": {
-        "policy": "read"
-      },
-      "carbonio-message-broker-clustered/": {
-        "policy": "write"
-      },
       "rabbitmq/": {
         "policy": "write"
       },
@@ -27,22 +18,13 @@
   ],
   "service": [
     {
-      "carbonio-message-broker-http": {
-        "policy": "write"
-      },
-      "carbonio-message-broker-webstomp": {
-        "policy": "write"
-      },
-      "carbonio-message-broker-http-sidecar-proxy": {
-        "policy": "write"
-      },
-      "carbonio-message-broker-webstomp-sidecar-proxy": {
+      "carbonio-message-broker-sidecar-proxy": {
         "policy": "write"
       },
       "rabbitmq": {
         "policy": "write"
       },
-      "carbonio-message-broker-clustered": {
+      "carbonio-message-broker": {
         "policy": "write"
       }
     }

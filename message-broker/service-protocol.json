@@ -1,5 +1,5 @@
 {
   "Kind": "service-defaults",
-  "Name": "carbonio-message-broker-http",
+  "Name": "carbonio-message-broker",
   "Protocol": "http"
 }
