@@ -113,15 +113,15 @@ package() {
   done
 
   cd ${srcdir}
-  install -Dm 644 intentions-http.json \
+  install -Dm 644 intentions.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions.json"
   install -Dm 644 policies.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
-  install -Dm 644 service-protocol-http.json \
+  install -Dm 644 service-protocol.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
   install -Dm 644 carbonio-message-broker.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
-  install -Dm 644 carbonio-message-broker-http-sidecar.service \
+  install -Dm 644 carbonio-message-broker-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-broker-sidecar.service"
   install -Dm 644 carbonio-message-broker-setup.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
