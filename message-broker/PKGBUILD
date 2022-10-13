@@ -46,6 +46,7 @@ sources=(
   "carbonio-message-broker-sidecar.service"
   "carbonio-message-broker-bootstrap"
   "carbonio-message-broker-admin-bootstrap"
+  "carbonio-message-broker-proxy.hcl"
 )
 backup=(
   "etc/rabbitmq/rabbitmq.conf"
@@ -63,6 +64,7 @@ hashsums=(
   "21f04e61e8bd116ccdfcf16745855bae3f3e9e3b91c34a64e30e3308589d703a"
   "9dd88b4b80d48084f5b536109889ddca2fc3752432af93f81425085ff2867388"
   "be594193e90ea5a46b96ebad539242378cfc8ebf3ba5bd0c92320a2dc0618f96"
+  "skip"
 )
 
 build() {
@@ -129,6 +131,8 @@ package() {
     "${pkgdir}/usr/bin/carbonio-message-broker"
   install -Dm 755 carbonio-message-broker-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-bootstrap"
   install -Dm 755 carbonio-message-broker-admin-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-admin-bootstrap"
+  install -Dm 644 carbonio-message-broker-proxy.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-message-broker-proxy.hcl"
 }
 
 postinst() {
