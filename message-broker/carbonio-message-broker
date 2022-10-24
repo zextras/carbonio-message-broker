@@ -49,7 +49,7 @@ set -e
 
 consul config write /etc/carbonio/message-broker/service-discover/service-protocol.json
 consul config write /etc/carbonio/message-broker/service-discover/intentions.json
-consul config write /etc/carbonio/message-broker/service-discover/carbonio-message-broker-sidecar-proxy.hcl
+consul config write /etc/carbonio/message-broker/service-discover/carbonio-message-broker-sidecar.hcl
 
 if [[ ! -f "/etc/carbonio/message-broker/service-discover/token" ]]; then
     # Create the token, this is unique for every variant
