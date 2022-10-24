@@ -38,6 +38,7 @@ makedepends:apt=(
 sources=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.1/rabbitmq-server-3.10.1.tar.xz"
   "carbonio-message-broker"
+  "carbonio-message-broker.hcl"
   "carbonio-message-broker-setup.sh"
   "intentions.json"
   "policies.json"
@@ -49,6 +50,7 @@ sources=(
   "carbonio-message-broker-sidecar-proxy.hcl"
 )
 backup=(
+  "/etc/zextras/service-discover/carbonio-message-broker.hcl"
   "etc/rabbitmq/rabbitmq.conf"
   "etc/rabbitmq/rabbitmq-env.conf"
   "etc/rabbitmq/enabled_plugins"
@@ -56,6 +58,7 @@ backup=(
 hashsums=(
   "13712b9cc86beede0eccd19503480ad393d7d211133c864208b4384a62d34cfb"
   "88dcc766fe605fcc284d618c199b0a47c09104fa96acdc3a6336120a07c0d845"
+  "skip"
   "217b8cc604d78ea39d420dd6ccc44e99e8514eaac0a600d02e7b9576239a883e"
   "41587a3e01d782a774f8494af5026c5a4103a137d9b32ed91c676c5c80897e87"
   "e4b82c7d0951eb23c16780c224e1fcb2f4a5b0d347802260b83153df84504c8f"
@@ -121,6 +124,7 @@ package() {
     "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
   install -Dm 644 service-protocol.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
+  install -Dm 644 carbonio-message-broker.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-message-broker.hcl"
   install -Dm 644 carbonio-message-broker.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
   install -Dm 644 carbonio-message-broker-sidecar.service \

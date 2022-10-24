@@ -4,12 +4,12 @@ services {
   connect {
     sidecar_service {
       proxy {
-        local_service_address = "127.78.0.17"
+        local_service_address = "127.78.0.16"
         upstreams             = []
       }
     }
   }
 
-  name = "carbonio-message-broker-http"
-  port = 10001
+  name = "carbonio-message-broker"
+  port = 10000
 }
