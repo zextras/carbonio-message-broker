@@ -6,6 +6,9 @@
       },
       "carbonio-message-broker/": {
         "policy": "write"
+      },
+      "carbonio-message-broker-clustered/": {
+        "policy": "write"
       }
     }
   ],
@@ -18,13 +21,16 @@
   ],
   "service": [
     {
-      "carbonio-message-broker-sidecar-proxy": {
+      "carbonio-message-broker-sidecar": {
         "policy": "write"
       },
       "rabbitmq": {
         "policy": "write"
       },
       "carbonio-message-broker": {
+        "policy": "write"
+      },
+      "carbonio-message-broker-clustered": {
         "policy": "write"
       }
     }
