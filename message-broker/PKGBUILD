@@ -50,9 +50,9 @@ sources=(
 )
 backup=(
   "/etc/zextras/service-discover/carbonio-message-broker.hcl"
-  "etc/rabbitmq/rabbitmq.conf"
-  "etc/rabbitmq/rabbitmq-env.conf"
-  "etc/rabbitmq/enabled_plugins"
+  "/etc/rabbitmq/rabbitmq.conf"
+  "/etc/rabbitmq/rabbitmq-env.conf"
+  "/etc/rabbitmq/enabled_plugins"
 )
 hashsums=(
   "13712b9cc86beede0eccd19503480ad393d7d211133c864208b4384a62d34cfb"
