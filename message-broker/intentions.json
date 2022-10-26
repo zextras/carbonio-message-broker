@@ -1,9 +1,9 @@
 {
   "Kind": "service-intentions",
-  "Name": "carbonio-message-proxy-webstomp",
+  "Name": "carbonio-message-broker",
   "Sources": [
     {
-      "Name": "carbonio-proxy",
+      "Name": "carbonio-chats",
       "Action": "allow"
     }
   ]

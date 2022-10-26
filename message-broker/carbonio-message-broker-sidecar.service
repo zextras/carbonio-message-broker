@@ -1,5 +1,5 @@
 [Unit]
-Description=Carbonio message broker HTTP sidecar proxy
+Description=Carbonio message broker sidecar proxy
 Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
 Requires=network-online.target
 After=network-online.target
@@ -9,7 +9,7 @@ Type=simple
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/message-broker/service-discover/token \
     -admin-bind localhost:0 \
-    -sidecar-for carbonio-message-broker-http
+    -sidecar-for carbonio-message-broker
 Restart=on-failure
 RestartSec=15
 User=carbonio-message-broker

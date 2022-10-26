@@ -1,0 +1,47 @@
+#!/bin/bash
+
+MAIN_SERVICE_NAME="carbonio-message-broker"
+CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
+RABBITMQ_COMMANDS_FOLDER="/opt/zextras/common/bin"
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+get_consul_kv() {
+  KEY=$1
+  CONSUL_VALUE=$(consul kv get -token-file="$CONSUL_TOKEN_PATH" "$KEY")
+}
+
+TMP_PATH=$PATH
+export PATH="$PATH:"$RABBITMQ_COMMANDS_FOLDER""
+get_consul_kv "$MAIN_SERVICE_NAME/admin/username" >/dev/null 2>&1; USERNAME=$CONSUL_VALUE
+get_consul_kv "$MAIN_SERVICE_NAME/admin/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VALUE
+
+RESULT=999
+if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
+  rabbitmqctl authenticate_user "$USERNAME" "$PASSWORD" >/dev/null 2>&1
+  RESULT=$?
+fi
+
+if [[ "$RESULT" != "0" ]]; then
+  if [[ "$USERNAME" != "$MAIN_SERVICE_NAME-admin" ]]; then
+    consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/admin/username" "$MAIN_SERVICE_NAME-admin"
+  fi
+  PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
+  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/admin/password" "$PASSWORD"
+  rabbitmqctl add_user "$MAIN_SERVICE_NAME-admin" "$PASSWORD" >/dev/null 2>&1
+  EXIT_CODE=$?
+  if [[ "$EXIT_CODE" != "0" ]]; then
+    rabbitmqctl change_password "$MAIN_SERVICE_NAME-admin" "$PASSWORD" >/dev/null 2>&1
+    echo "Changed password for the user $MAIN_SERVICE_NAME-admin"
+  else
+    rabbitmqctl set_permissions -p "/" "$MAIN_SERVICE_NAME-admin" ".*" ".*" ".*" >/dev/null 2>&1
+    rabbitmqctl set_user_tags "$MAIN_SERVICE_NAME-admin" administrator
+    echo "User $MAIN_SERVICE_NAME-admin added"
+  fi
+else
+  echo "User $MAIN_SERVICE_NAME-admin already exists"
+fi
+export PATH=$TMP_PATH

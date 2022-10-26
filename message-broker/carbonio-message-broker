@@ -17,12 +17,6 @@ if [[ "$1" != "setup" ]]; then
   exit 1;
 fi
 
-config_variant() {
-  VARIANT=$1
-  consul config write /etc/carbonio/message-broker/service-discover/service-protocol-"${VARIANT}".json
-  consul config write /etc/carbonio/message-broker/service-discover/intentions-"${VARIANT}".json
-}
-
 # Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
@@ -53,8 +47,8 @@ fi
 trap 'echo Script for message broker terminated with error' EXIT
 set -e
 
-config_variant "http"
-config_variant "webstomp"
+consul config write /etc/carbonio/message-broker/service-discover/service-protocol.json
+consul config write /etc/carbonio/message-broker/service-discover/intentions.json
 
 if [[ ! -f "/etc/carbonio/message-broker/service-discover/token" ]]; then
     # Create the token, this is unique for every variant
@@ -77,10 +71,13 @@ fi
 
 consul reload
 
+carbonio-message-broker-bootstrap
+carbonio-message-broker-admin-bootstrap
+
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 
 systemctl restart carbonio-message-broker.service
-systemctl restart carbonio-message-broker-http-sidecar.service
-systemctl restart carbonio-message-broker-webstomp-sidecar.service
+systemctl restart carbonio-message-broker-sidecar.service
+
 trap - EXIT
