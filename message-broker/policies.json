@@ -21,7 +21,7 @@
   ],
   "service": [
     {
-      "carbonio-message-broker-sidecar": {
+      "carbonio-message-broker-sidecar-proxy": {
         "policy": "write"
       },
       "rabbitmq": {
