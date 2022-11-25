@@ -1,0 +1,9 @@
+/var/log/carbonio/message-broker/*.log {
+    weekly
+    rotate 20
+	missingok
+	notifempty
+	compress
+	create 640 carbonio-message-broker carbonio-message-broker
+}
+

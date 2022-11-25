@@ -1,0 +1,2 @@
+d /var/lib/carbonio-message-broker 0750 carbonio-message-broker carbonio-message-broker - -
+d /var/log/carbonio/message-broker 0750 carbonio-message-broker carbonio-message-broker - -

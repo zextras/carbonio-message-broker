@@ -14,11 +14,12 @@ TimeoutStartSec=600
 LimitNOFILE=32768
 Restart=on-failure
 RestartSec=10
-WorkingDirectory=/var/lib/rabbitmq
+WorkingDirectory=/var/lib/carbonio-message-broker
 ExecStart=/opt/zextras/common/bin/rabbitmq-server
 ExecStop=/opt/zextras/common/bin/rabbitmqctl shutdown
 SuccessExitStatus=69
-Environment=PATH=/opt/zextras/common/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PATH="/opt/zextras/common/bin:/opt/zextras/common/lib/erlang/bin:/usr/bin"
+Environment=RABBITMQ_CONF_ENV_FILE="/etc/carbonio/message-broker/rabbitmq-env.conf"
 
 [Install]
 WantedBy=multi-user.target

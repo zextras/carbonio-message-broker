@@ -48,7 +48,7 @@ pipeline {
                                 sh 'sudo mv auth.conf /etc/apt'
                         }
                         sh '''
-sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zextras.list
+sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-playground focal main" > zextras.list
 sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
@@ -84,6 +84,16 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     }
                     steps {
                         unstash 'project'
+                        withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+                            passwordVariable: 'SECRET',
+                            usernameVariable: 'USERNAME')]) {
+                                sh 'echo "[Zextras]" > zextras.repo'
+                                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-playground/" >> zextras.repo'
+                                sh 'echo "enabled=1" >> zextras.repo'
+                                sh 'echo "gpgcheck=0" >> zextras.repo'
+                                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-playground/repomd.xml.key" >> zextras.repo'
+                                sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
+                        }
                         sh '''
                           mkdir /tmp/broker
                           mv * /tmp/broker
@@ -123,22 +133,12 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     uploadSpec = '''{
                         "files": [
                             {
-                                "pattern": "artifacts/carbonio-erlang_*focal*.deb",
-                                "target": "ubuntu-playground/pool/",
-                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
-                            },
-                            {
-                                "pattern": "artifacts/carbonio-message-broker_*focal*.deb",
+                                "pattern": "artifacts/*.deb",
                                 "target": "ubuntu-playground/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
                                 "pattern": "artifacts/(carbonio-message-broker)-(*).rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-erlang)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
@@ -163,22 +163,12 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     uploadSpec = '''{
                         "files": [
                             {
-                                "pattern": "artifacts/carbonio-erlang_*focal*.deb",
-                                "target": "ubuntu-devel/pool/",
-                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
-                            },
-                            {
-                                "pattern": "artifacts/carbonio-message-broker_*focal*.deb",
+                                "pattern": "artifacts/*.deb",
                                 "target": "ubuntu-devel/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             },
                             {
                                 "pattern": "artifacts/(carbonio-message-broker)-(*).rpm",
-                                "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-erlang)-(*).rpm",
                                 "target": "centos8-devel/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
@@ -207,12 +197,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     uploadSpec = '''{
                         "files": [
                             {
-                                "pattern": "artifacts/carbonio-erlang_*focal*.deb",
-                                "target": "ubuntu-rc/pool/",
-                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
-                            },
-                            {
-                                "pattern": "artifacts/carbonio-message-broker_*focal*.deb",
+                                "pattern": "artifacts/*.deb",
                                 "target": "ubuntu-rc/pool/",
                                 "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
                             }
@@ -259,11 +244,6 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                         "files": [
                             {
                                 "pattern": "artifacts/(carbonio-message-broker)-(*).rpm",
-                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
-                            },
-                            {
-                                "pattern": "artifacts/(carbonio-erlang)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
