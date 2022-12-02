@@ -1,15 +1,23 @@
 services {
-  checks = [],
-
+  check {
+    tcp      = "localhost:5672"
+    timeout  = "1s"
+    interval = "5s"
+  }
   connect {
     sidecar_service {
       proxy {
-        local_service_address = "127.78.0.15"
-        upstreams             = []
+        upstreams = [
+          {
+            destination_name = "carbonio-message-broker"
+            local_bind_address = "127.78.0.15"
+            local_bind_port = 20000
+          }
+        ]
       }
     }
   }
 
   name = "carbonio-message-broker"
-  port = 10000
+  port = 5672
 }
