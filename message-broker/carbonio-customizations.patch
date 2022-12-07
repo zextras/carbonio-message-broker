@@ -1,0 +1,124 @@
+diff '--color=auto' -Naur a/deps/amqp10_common/codegen.py b/deps/amqp10_common/codegen.py
+--- a/deps/amqp10_common/codegen.py	2022-12-02 13:53:02.384739081 +0100
++++ b/deps/amqp10_common/codegen.py	2022-12-02 13:54:23.432137608 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ 
+ from __future__ import print_function
+ 
+diff '--color=auto' -Naur a/deps/rabbit_common/codegen.py b/deps/rabbit_common/codegen.py
+--- a/deps/rabbit_common/codegen.py	2022-12-02 13:53:02.412739219 +0100
++++ b/deps/rabbit_common/codegen.py	2022-12-02 13:54:23.432137608 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ 
+ ##  This Source Code Form is subject to the terms of the Mozilla Public
+ ##  License, v. 2.0. If a copy of the MPL was not distributed with this
+diff '--color=auto' -Naur a/deps/rabbit_common/src/rabbit_env.erl b/deps/rabbit_common/src/rabbit_env.erl
+--- a/deps/rabbit_common/src/rabbit_env.erl	2022-12-02 13:53:02.413739224 +0100
++++ b/deps/rabbit_common/src/rabbit_env.erl	2022-12-02 13:53:28.634868430 +0100
+@@ -1089,7 +1089,7 @@
+     ThisModDir = this_module_dir(),
+     PluginsDir = rabbit_common_mod_location_to_plugins_dir(ThisModDir),
+     case {OSType, PluginsDir} of
+-        {{unix, _}, "/usr/lib/rabbitmq/" ++ _} ->
++        {{unix, _}, "/opt/zextras/common/lib/rabbitmq/" ++ _} ->
+             UserPluginsDir = filename:join(
+                                ["/", "usr", "lib", "rabbitmq", "plugins"]),
+             UserPluginsDir ++ ":" ++ PluginsDir;
+diff '--color=auto' -Naur a/scripts/rabbitmq-script-wrapper b/scripts/rabbitmq-script-wrapper
+--- a/scripts/rabbitmq-script-wrapper	2022-12-02 13:53:02.450739406 +0100
++++ b/scripts/rabbitmq-script-wrapper	2022-12-02 13:54:23.432137608 +0100
+@@ -33,22 +33,22 @@
+ 
+ maybe_fixup_erlang_cookie() {
+     # rabbitmq/rabbitmq-server-release#85
+-    _rabbitmq_home="$(cd ~rabbitmq && pwd)"
++    _rabbitmq_home="$(cd ~carbonio-message-broker && pwd)"
+     _erlang_cookie="$_rabbitmq_home/.erlang.cookie"
+     if [ -f "$_erlang_cookie" ]
+     then
+-        chown @RABBITMQ_USER@:@RABBITMQ_GROUP@ "$_erlang_cookie"
++        chown carbonio-message-broker:carbonio-message-broker "$_erlang_cookie"
+         chmod 400 "$_erlang_cookie"
+     fi
+ }
+ 
+ ensure_we_are_in_a_readable_dir() {
+   # shellcheck disable=SC2164
+-  cd ~rabbitmq || cd /
++  cd ~carbonio-message-broker || cd /
+ }
+ 
+ current_user_is_rabbitmq() {
+-  [ "$(id -un)" = "rabbitmq" ]
++  [ "$(id -un)" = "carbonio-message-broker" ]
+ }
+ 
+ current_user_is_root() {
+@@ -64,15 +64,15 @@
+ }
+ 
+ exec_rabbitmq_server() {
+-  exec /usr/lib/rabbitmq/bin/rabbitmq-server "$@"
++  exec /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-server "$@"
+ }
+ 
+ run_script_as_rabbitmq() {
+-  HOME="$(cd ~rabbitmq && pwd)" "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
++  HOME="$(cd ~carbonio-message-broker && pwd)" "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" "$@"
+ }
+ 
+ exec_script_as_rabbitmq() {
+-  HOME="$(cd ~rabbitmq && pwd)" exec "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
++  HOME="$(cd ~carbonio-message-broker && pwd)" exec "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" "$@"
+ }
+ 
+ exec_script_as_root() {
+@@ -86,13 +86,13 @@
+     # removed
+     if /sbin/runuser --version | grep -qF util-linux
+     then
+-        exec /sbin/runuser -u rabbitmq -- "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
++        exec /sbin/runuser -u carbonio-message-broker -- "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" "$@"
+     else
+-        exec /sbin/runuser -s /bin/sh -- rabbitmq "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
++        exec /sbin/runuser -s /bin/sh -- carbonio-message-broker "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" "$@"
+     fi
+   elif [ -x /bin/su ]
+   then
+-    exec /bin/su -s /bin/sh rabbitmq -- "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
++    exec /bin/su -s /bin/sh carbonio-message-broker -- "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" "$@"
+   else
+     echo "Please ensure /bin/su or /sbin/runuser exists and can be executed by $USER." 1>&2
+     exit 1
+@@ -100,7 +100,7 @@
+ }
+ 
+ run_script_help_and_fail() {
+-  "/usr/lib/rabbitmq/bin/$SCRIPT" help
++  "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" help
+ 
+   echo "
+ Only root or rabbitmq can run $SCRIPT
+diff '--color=auto' -Naur a/scripts/rabbitmq-server.ocf b/scripts/rabbitmq-server.ocf
+--- a/scripts/rabbitmq-server.ocf	2022-12-02 13:53:02.450739406 +0100
++++ b/scripts/rabbitmq-server.ocf	2022-12-02 13:54:23.432137608 +0100
+@@ -32,11 +32,11 @@
+ 
+ #######################################################################
+ 
+-OCF_RESKEY_server_default="/usr/sbin/rabbitmq-server"
+-OCF_RESKEY_ctl_default="/usr/sbin/rabbitmqctl"
++OCF_RESKEY_server_default="/opt/zextras/common/bin/rabbitmq-server"
++OCF_RESKEY_ctl_default="/opt/zextras/common/bin/rabbitmqctl"
+ OCF_RESKEY_nodename_default="rabbit@localhost"
+-OCF_RESKEY_log_base_default="/var/log/rabbitmq"
+-OCF_RESKEY_pid_file_default="/var/run/rabbitmq/pid"
++OCF_RESKEY_log_base_default="/var/log/carbonio/message-broker"
++OCF_RESKEY_pid_file_default="/var/run/carbonio-message-broker/pid"
+ OCF_RESKEY_limit_nofile_default=65535
+ : ${OCF_RESKEY_server=${OCF_RESKEY_server_default}}
+ : ${OCF_RESKEY_ctl=${OCF_RESKEY_ctl_default}}

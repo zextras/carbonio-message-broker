@@ -2,14 +2,10 @@ pkgname="carbonio-message-broker"
 pkgver="0.1.0"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
-pkgdesclong=(
-  "Carbonio message broker"
-)
 url="https://www.zextras.com/"
 maintainer="Zextras <packages@zextras.com>"
 arch="all"
 license=("MPL")
-# backup=("etc/rabbitmq/rabbitmq-env.conf")
 depends:apt=(
   "adduser"
   "carbonio-erlang"
@@ -23,6 +19,8 @@ depends:apt=(
   "socat"
 )
 makedepends:apt=(
+  "carbonio-elixir"
+  "carbonio-erlang"
   "inetutils-tools"
   "libxslt-dev"
   "python3"
@@ -36,110 +34,136 @@ makedepends:apt=(
   "zip"
 )
 sources=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.1/rabbitmq-server-3.10.1.tar.xz"
-  "carbonio-message-broker"
-  "carbonio-message-broker.hcl"
-  "carbonio-message-broker-setup.sh"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.7/rabbitmq-server-3.10.7.tar.xz"
+  "carbonio-customizations.patch"
+  "${pkgname}"
+  "${pkgname}-admin-bootstrap"
+  "${pkgname}-bootstrap"
+  "${pkgname}-setup.sh"
+  "${pkgname}-sidecar.service"
+  "${pkgname}.hcl"
+  "${pkgname}.logrotate"
+  "${pkgname}.service"
+  "${pkgname}.sysusers"
+  "${pkgname}.tmpfiles"
+  "default_schema.json"
+  "enabled_plugins"
   "intentions.json"
   "policies.json"
+  "rabbitmq-env.conf"
+  "rabbitmq.conf"
   "service-protocol.json"
-  "carbonio-message-broker.service"
-  "carbonio-message-broker-sidecar.service"
-  "carbonio-message-broker-bootstrap"
-  "carbonio-message-broker-admin-bootstrap"
 )
 backup=(
-  "/etc/zextras/service-discover/carbonio-message-broker.hcl"
-  "/etc/rabbitmq/rabbitmq.conf"
-  "/etc/rabbitmq/rabbitmq-env.conf"
-  "/etc/rabbitmq/enabled_plugins"
+  "/etc/carbonio/message-broker/enabled_plugins"
+  "/etc/carbonio/message-broker/rabbitmq-env.conf"
+  "/etc/carbonio/message-broker/rabbitmq.conf"
+  "/etc/zextras/service-discover/${pkgname}.hcl"
 )
 hashsums=(
-  "13712b9cc86beede0eccd19503480ad393d7d211133c864208b4384a62d34cfb"
-  "88dcc766fe605fcc284d618c199b0a47c09104fa96acdc3a6336120a07c0d845"
+  "b55e30584187f196505053db1fe90601eac7c9063415fff80db06c247d692eb5"
   "skip"
-  "217b8cc604d78ea39d420dd6ccc44e99e8514eaac0a600d02e7b9576239a883e"
-  "41587a3e01d782a774f8494af5026c5a4103a137d9b32ed91c676c5c80897e87"
-  "e4b82c7d0951eb23c16780c224e1fcb2f4a5b0d347802260b83153df84504c8f"
-  "d908c5ef95be33ca3dc569926999cb149c3c76881aa3d5866915dacfd9d263d3"
-  "cf3c8cfefd433da27b860fdf7f99aab2dbe239c7f586b8cc5ef61d216ccced91"
-  "21f04e61e8bd116ccdfcf16745855bae3f3e9e3b91c34a64e30e3308589d703a"
-  "9dd88b4b80d48084f5b536109889ddca2fc3752432af93f81425085ff2867388"
-  "be594193e90ea5a46b96ebad539242378cfc8ebf3ba5bd0c92320a2dc0618f96"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
 )
 
 build() {
-  cd "${srcdir}"/rabbitmq-server-3.10.1
-  sed -E 's|^(SYS_PREFIX=).*$|\1""|' -i deps/rabbit/scripts/rabbitmq-defaults
-  sed -E 's|@RABBITMQ_USER@|carbonio-message-broker|g' -i scripts/rabbitmq-script-wrapper
-  sed -E 's|@RABBITMQ_GROUP@|carbonio-message-broker|g' -i scripts/rabbitmq-script-wrapper
-  sed -E 's|@STDOUT_STDERR_REDIRECTION@||g' -i scripts/rabbitmq-script-wrapper
-  sed -e "s|%%VSN%%|3.10.1|" -i deps/rabbitmq_management/bin/rabbitmqadmin
-  # patch -p1 <../rabbitmq-customize-systemd-service.patch
+  export PATH="/opt/zextras/common/bin/:$PATH"
+  export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
+  export CFLAGS="-I/opt/zextras/common/include"
 
-  grep -Rsnl "python" | xargs sed -i 's/python/python3/g'
+  cd "${srcdir}"/rabbitmq-server-3.10.7
+  patch -Np1 -i ../carbonio-customizations.patch
 
-  export LC_ALL=en_US.UTF-8
-  
-  make
-  make DESTDIR="${pkgdir}" \
+  make \
     PREFIX=/opt/zextras/common \
-    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq \
-    install
-
-  # install -Dm 644 deps/rabbit/docs/rabbitmq-server.service.example "${pkgdir}/opt/zextras/common/lib/systemd/system/rabbitmq.service"
-  # install -Dm 644 "${srcdir}/rabbitmq-env.conf" "${pkgdir}/etc/rabbitmq/rabbitmq-env.conf"
-  # install -Dm 644 "${srcdir}/rabbitmq.sysusers" "${pkgdir}/opt/zextras/common/lib/sysusers.d/rabbitmq.conf"
-  # install -Dm 644 "${srcdir}/rabbitmq.tmpfiles" "${pkgdir}/opt/zextras/common/lib/tmpfiles.d/rabbitmq.conf"
-  # install -Dm 644 "${srcdir}/rabbitmq.logrotate" "${pkgdir}/etc/logrotate.d/rabbitmq"
-
-  # chown -R 197:0 "${pkgdir}/etc/rabbitmq"
+    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
 }
 
 package() {
-  cd "${srcdir}"/rabbitmq-server-3.10.1
-  install -Dm 755 deps/rabbitmq_management/bin/rabbitmqadmin -t "${pkgdir}/opt/zextras/common/bin"
-  rm -f INSTALL LICENSE-*
+  export PATH="/opt/zextras/common/bin/:$PATH"
+  export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
+  export CFLAGS="-I/opt/zextras/common/include"
 
-  mkdir -p "${pkgdir}/var/lib/rabbitmq/mnesia"
-  mkdir -p "${pkgdir}/var/log/rabbitmq"
+  cd "${srcdir}"/rabbitmq-server-3.10.7
 
-  cd "${srcdir}"/../../broker/message-broker
-  rsync -a etc/ "${pkgdir}/etc/"
+  make \
+    DESTDIR="${pkgdir}" \
+    PREFIX=/opt/zextras/common \
+    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq \
+    install install-bin
 
-  # Executables symlinks
-  mkdir -p "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
-  for file in ${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/*
-  do
-    # move this to opt zextras common bin
-    ln -s "../lib/rabbitmq/lib/rabbitmq_server-3.10.1/sbin/$(basename $file)" "${pkgdir}/opt/zextras/common/bin/$(basename $file)"
+  # using script wrapper for better bin handling
+  libdir="${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.7"
+  install -d "${pkgdir}/opt/zextras/common/bin"
+  install -Dm 755 scripts/rabbitmq-script-wrapper \
+    -t "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
+  for script in "${libdir}"/sbin/rabbit*; do
+    ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+      "${pkgdir}/opt/zextras/common/bin/${script#${libdir}/sbin/}"
   done
 
+  install -Dm644 "${srcdir}/rabbitmq-env.conf" \
+    "${pkgdir}/etc/carbonio/message-broker/rabbitmq-env.conf"
+  install -Dm644 "${srcdir}/rabbitmq.conf" \
+    "${pkgdir}/etc/carbonio/message-broker/rabbitmq.conf"
+  install -Dm644 "${srcdir}/default_schema.json" \
+    "${pkgdir}/etc/carbonio/message-broker/default_schema.json"
+  install -Dm644 "${srcdir}/enabled_plugins" \
+    "${pkgdir}/etc/carbonio/message-broker/enabled_plugins"
+  install -Dm 644 "${srcdir}/${pkgname}.sysusers" \
+    "${pkgdir}/usr/lib/sysusers.d/${pkgname}.conf"
+  install -Dm644 "${srcdir}/${pkgname}.tmpfiles" \
+    "${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf"
+  install -Dm644 "${srcdir}/${pkgname}.logrotate" \
+    "${pkgdir}/etc/logrotate.d/${pkgname}"
+
   cd ${srcdir}
-  install -Dm 644 intentions.json \
+  install -Dm644 intentions.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions.json"
-  install -Dm 644 policies.json \
+  install -Dm644 policies.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
-  install -Dm 644 service-protocol.json \
+  install -Dm644 service-protocol.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
-  install -Dm 644 carbonio-message-broker.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-message-broker.hcl"
-  install -Dm 644 carbonio-message-broker.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-broker.service"
-  install -Dm 644 carbonio-message-broker-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-broker-sidecar.service"
-  install -Dm 644 carbonio-message-broker-setup.sh \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-broker.sh"
-  install -Dm 755 carbonio-message-broker \
-    "${pkgdir}/usr/bin/carbonio-message-broker"
-  install -Dm 755 carbonio-message-broker-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-bootstrap"
-  install -Dm 755 carbonio-message-broker-admin-bootstrap "${pkgdir}/usr/bin/carbonio-message-broker-admin-bootstrap"
+  install -Dm644 ${pkgname}.hcl \
+    "${pkgdir}/etc/zextras/service-discover/${pkgname}.hcl"
+  install -Dm644 ${pkgname}.service \
+    "${pkgdir}/lib/systemd/system/${pkgname}.service"
+  install -Dm644 ${pkgname}-sidecar.service \
+    "${pkgdir}/lib/systemd/system/${pkgname}-sidecar.service"
+  install -Dm644 ${pkgname}-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/${pkgname}.sh"
+  install -Dm755 ${pkgname} \
+    "${pkgdir}/usr/bin/${pkgname}"
+  install -Dm755 ${pkgname}-bootstrap \
+    "${pkgdir}/usr/bin/${pkgname}-bootstrap"
+  install -Dm755 ${pkgname}-admin-bootstrap \
+    "${pkgdir}/usr/bin/${pkgname}-admin-bootstrap"
+
+  # Create log folder for carbonio-message-broker  
+  install -d "${pkgdir}/var/log/carbonio/message-broker"
 }
 
 postinst() {
   getent group 'carbonio-message-broker' >/dev/null ||
     groupadd -r 'carbonio-message-broker'
   getent passwd 'carbonio-message-broker' >/dev/null ||
-    useradd -r -M -g 'carbonio-message-broker' -d /var/lib/rabbitmq -s /sbin/nologin 'carbonio-message-broker'
+    useradd -r -m -g 'carbonio-message-broker' -d /var/lib/carbonio-message-broker -s /sbin/nologin 'carbonio-message-broker'
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
@@ -147,12 +171,10 @@ postinst() {
     systemctl enable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
   fi
 
-   #TODO Find a way to change the default rabbitmq guest user credentials
-
-  chown -R carbonio-message-broker:carbonio-message-broker /etc/rabbitmq
-  chown -R carbonio-message-broker:carbonio-message-broker /usr/lib/rabbitmq
-  chown -R carbonio-message-broker:carbonio-message-broker /var/lib/rabbitmq
-  chown -R carbonio-message-broker:carbonio-message-broker /var/log/rabbitmq
+  chown -R carbonio-message-broker:carbonio-message-broker /etc/carbonio/message-broker
+  chown -R carbonio-message-broker:carbonio-message-broker /var/lib/carbonio-message-broker
+  chown -R carbonio-message-broker:carbonio-message-broker /var/lib/carbonio-message-broker
+  chown -R carbonio-message-broker:carbonio-message-broker /var/log/carbonio/message-broker
 
   echo "======================================================"
   echo "Carbonio message broker installed successfully!"
@@ -169,9 +191,24 @@ prerm() {
   fi
 }
 
-postrm() {
+postrm:apt() {
+  if [ "$1" = "purge" ]; then
+    rm -rf /var/lib/carbonio-message-broker/mnesia/
+  fi
+
   rm -f /etc/carbonio/message-broker/service-discover/token
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi
+}
+
+postrm:yum() {
+  rm -f /etc/carbonio/message-broker/service-discover/token
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
+
+  echo "Don't forget to backup/remove the following folder:"
+  echo ""
+  echo "/var/lib/carbonio-message-broker/mnesia/"
 }
