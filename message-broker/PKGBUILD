@@ -191,9 +191,24 @@ prerm() {
   fi
 }
 
-postrm() {
+postrm:apt() {
+  if [ "$1" = "purge" ]; then
+    rm -rf /var/lib/carbonio-message-broker/mnesia/
+  fi
+
   rm -f /etc/carbonio/message-broker/service-discover/token
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi
+}
+
+postrm:yum() {
+  rm -f /etc/carbonio/message-broker/service-discover/token
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
+
+  echo "Don't forget to backup/remove the following folder:"
+  echo ""
+  echo "/var/lib/carbonio-message-broker/mnesia/"
 }
