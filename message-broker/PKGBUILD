@@ -2,14 +2,19 @@ pkgname="carbonio-message-broker"
 pkgver="0.1.0"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
+pkgdesclong=(
+  "Carbonio message broker"
+)
 url="https://www.zextras.com/"
 maintainer="Zextras <packages@zextras.com>"
 arch="all"
 license=("MPL")
+section="utils"
+priority="optional"
 depends:apt=(
   "adduser"
   "carbonio-erlang"
-  "jq"
+  "carbonio-openssl"
   "locales-all"
   "logrotate"
   "lsb-base"
@@ -21,17 +26,22 @@ depends:apt=(
 makedepends:apt=(
   "carbonio-elixir"
   "carbonio-erlang"
-  "inetutils-tools"
-  "libxslt-dev"
+  "carbonio-openssl"
   "python3"
-  "python3-simplejson"
-  "rsync"
+)
+depends:yum=(
+  "carbonio-erlang"
+  "carbonio-openssl"
+  "pending-setups"
+  "python3"
+  "service-discover"
   "socat"
-  "systemd"
-  "unzip"
-  "util-linux"
-  "xmlto"
-  "zip"
+)
+makedepends:yum=(
+  "carbonio-elixir"
+  "carbonio-erlang"
+  "carbonio-openssl"
+  "python3"
 )
 sources=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.7/rabbitmq-server-3.10.7.tar.xz"
