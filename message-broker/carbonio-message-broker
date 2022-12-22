@@ -71,13 +71,14 @@ fi
 
 consul reload
 
-carbonio-message-broker-bootstrap
-carbonio-message-broker-admin-bootstrap
 
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 
 systemctl restart carbonio-message-broker.service
 systemctl restart carbonio-message-broker-sidecar.service
+
+carbonio-message-broker-set-user
+carbonio-message-broker-set-admin
 
 trap - EXIT

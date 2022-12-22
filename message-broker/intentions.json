@@ -5,6 +5,10 @@
     {
       "Name": "carbonio-chats",
       "Action": "allow"
+    },
+    {
+      "Name": "carbonio-files",
+      "Action": "allow"
     }
   ]
 }

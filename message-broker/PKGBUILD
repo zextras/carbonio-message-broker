@@ -37,8 +37,8 @@ sources=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.7/rabbitmq-server-3.10.7.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
-  "${pkgname}-admin-bootstrap"
-  "${pkgname}-bootstrap"
+  "${pkgname}-set-admin"
+  "${pkgname}-set-user"
   "${pkgname}-setup.sh"
   "${pkgname}-sidecar.service"
   "${pkgname}.hcl"
@@ -57,7 +57,7 @@ sources=(
 backup=(
   "/etc/carbonio/message-broker/enabled_plugins"
   "/etc/carbonio/message-broker/rabbitmq-env.conf"
-  "/etc/carbonio/message-broker/rabbitmq.conf"
+  "/etc/carbonio/message-broker/conf.d/rabbitmq.conf"
   "/etc/zextras/service-discover/${pkgname}.hcl"
 )
 hashsums=(
@@ -121,7 +121,7 @@ package() {
   install -Dm644 "${srcdir}/rabbitmq-env.conf" \
     "${pkgdir}/etc/carbonio/message-broker/rabbitmq-env.conf"
   install -Dm644 "${srcdir}/rabbitmq.conf" \
-    "${pkgdir}/etc/carbonio/message-broker/rabbitmq.conf"
+    "${pkgdir}/etc/carbonio/message-broker/conf.d/rabbitmq.conf"
   install -Dm644 "${srcdir}/default_schema.json" \
     "${pkgdir}/etc/carbonio/message-broker/default_schema.json"
   install -Dm644 "${srcdir}/enabled_plugins" \
@@ -150,10 +150,10 @@ package() {
     "${pkgdir}/etc/zextras/pending-setups.d/${pkgname}.sh"
   install -Dm755 ${pkgname} \
     "${pkgdir}/usr/bin/${pkgname}"
-  install -Dm755 ${pkgname}-bootstrap \
-    "${pkgdir}/usr/bin/${pkgname}-bootstrap"
-  install -Dm755 ${pkgname}-admin-bootstrap \
-    "${pkgdir}/usr/bin/${pkgname}-admin-bootstrap"
+  install -Dm755 ${pkgname}-set-user \
+    "${pkgdir}/usr/bin/${pkgname}-set-user"
+  install -Dm755 ${pkgname}-set-admin \
+    "${pkgdir}/usr/bin/${pkgname}-set-admin"
 
   # Create log folder for carbonio-message-broker  
   install -d "${pkgdir}/var/log/carbonio/message-broker"

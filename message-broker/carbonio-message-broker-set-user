@@ -3,6 +3,7 @@
 MAIN_SERVICE_NAME="carbonio-message-broker"
 CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
 RABBITMQ_COMMANDS_FOLDER="/opt/zextras/common/bin"
+RABBITMQ_NODE_NAME="carbonio-message-broker-clustered"
 
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root"
@@ -21,7 +22,7 @@ get_consul_kv "$MAIN_SERVICE_NAME/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VA
 
 RESULT=999
 if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
-  rabbitmqctl authenticate_user "$USERNAME" "$PASSWORD" >/dev/null 2>&1
+  rabbitmqctl authenticate_user --node "$RABBITMQ_NODE_NAME" "$USERNAME" "$PASSWORD" >/dev/null 2>&1
   RESULT=$?
 fi
 
@@ -31,13 +32,13 @@ if [[ "$RESULT" != "0" ]]; then
   fi
   PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
   consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/password" "$PASSWORD"
-  rabbitmqctl add_user $MAIN_SERVICE_NAME "$PASSWORD" >/dev/null 2>&1
+  rabbitmqctl add_user --node "$RABBITMQ_NODE_NAME" $MAIN_SERVICE_NAME "$PASSWORD" >/dev/null 2>&1
   EXIT_CODE=$?
   if [[ "$EXIT_CODE" != "0" ]]; then
-    rabbitmqctl change_password $MAIN_SERVICE_NAME "$PASSWORD" >/dev/null 2>&1
+    rabbitmqctl change_password --node "$RABBITMQ_NODE_NAME" $MAIN_SERVICE_NAME "$PASSWORD" >/dev/null 2>&1
     echo "Changed password for the user $MAIN_SERVICE_NAME"
   else
-    rabbitmqctl set_permissions -p "/" "$MAIN_SERVICE_NAME" ".*" ".*" ".*" >/dev/null 2>&1
+    rabbitmqctl set_permissions --node "$RABBITMQ_NODE_NAME" -p "/" "$MAIN_SERVICE_NAME" ".*" ".*" ".*" >/dev/null 2>&1
     echo "User $MAIN_SERVICE_NAME added"
   fi
 else
