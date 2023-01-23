@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: carbonio-message-broker
+  title: Carbonio Message Broker service
+  description: |
+    Service that allows to send or receive events through RabbitMQ application.
+  tags:
+    - bash
+    - envoy
+    - backend
+  links:
+    - url: https://github.com/Zextras/carbonio-message-broker/blob/main/README.md
+      title: README
+spec:
+  type: service
+  lifecycle: production
+  owner: smoky-beans
