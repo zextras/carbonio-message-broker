@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 MAIN_SERVICE_NAME="carbonio-message-broker"
 CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
 RABBITMQ_COMMANDS_FOLDER="/opt/zextras/common/bin"
