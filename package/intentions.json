@@ -9,6 +9,10 @@
     {
       "Name": "carbonio-files",
       "Action": "allow"
+    },
+    {
+      "Name": "carbonio-videoserver",
+      "Action": "allow"
     }
   ]
 }
