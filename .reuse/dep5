@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Chats Messaging DB
+Upstream-Name: Message Broker
 Upstream-Contact: Smoky Beans <smokybeans@zextras.com>
-Source: https://github.com/Zextras/carbonio-chats-messaging-db
+Source: https://github.com/Zextras/carbonio-message-broker
 
 Files: README.md
 Copyright: 2023 Zextras s.r.l
