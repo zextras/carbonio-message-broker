@@ -223,32 +223,15 @@ pipeline {
           }'''
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
           config = [
-              'buildName'          : buildInfo.name,
-              'buildNumber'        : buildInfo.number,
-              'sourceRepo'         : 'ubuntu-rc',
-              'targetRepo'         : 'ubuntu-release',
-              'comment'            : 'Do not change anything! Just press the button',
-              'status'             : 'Released',
-              'includeDependencies': false,
-              'copy'               : true,
-              'failFast'           : true
-          ]
-          Artifactory.addInteractivePromotion server: server,
-          promotionConfig: config,
-          displayName: 'Ubuntu Promotion to Release'
-          server.publishBuildInfo buildInfo
-
-          server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-          config = [
-              'buildName'          : buildInfo.name,
-              'buildNumber'        : buildInfo.number,
-              'sourceRepo'         : 'ubuntu-rc',
-              'targetRepo'         : 'ubuntu-release',
-              'comment'            : 'Do not change anything! Just press the button',
-              'status'             : 'Released',
-              'includeDependencies': false,
-              'copy'               : true,
-              'failFast'           : true
+             'buildName'          : buildInfo.name,
+             'buildNumber'        : buildInfo.number,
+             'sourceRepo'         : 'ubuntu-rc',
+             'targetRepo'         : 'ubuntu-release',
+             'comment'            : 'Do not change anything! Just press the button',
+             'status'             : 'Released',
+             'includeDependencies': false,
+             'copy'               : true,
+             'failFast'           : true
           ]
           Artifactory.addInteractivePromotion server: server,
           promotionConfig: config,
@@ -257,8 +240,8 @@ pipeline {
 
           //rocky8
           buildInfo = Artifactory.newBuildInfo()
-          buildInfo.name += '-centos8'
-          uploadSpec= '''{
+          buildInfo.name += "-centos8"
+          uploadSpec = '''{
             "files": [
               {
                 "pattern": "artifacts/(carbonio-message-broker)-(*).rpm",
@@ -269,15 +252,15 @@ pipeline {
           }'''
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
           config = [
-              'buildName'          : buildInfo.name,
-              'buildNumber'        : buildInfo.number,
-              'sourceRepo'         : 'centos8-rc',
-              'targetRepo'         : 'centos8-release',
-              'comment'            : 'Do not change anything! Just press the button',
-              'status'             : 'Released',
-              'includeDependencies': false,
-              'copy'               : true,
-              'failFast'           : true
+             'buildName'          : buildInfo.name,
+             'buildNumber'        : buildInfo.number,
+             'sourceRepo'         : 'centos8-rc',
+             'targetRepo'         : 'centos8-rc',
+             'comment'            : 'Do not change anything! Just press the button',
+             'status'             : 'Released',
+             'includeDependencies': false,
+             'copy'               : true,
+             'failFast'           : true
           ]
           Artifactory.addInteractivePromotion server: server,
           promotionConfig: config,
