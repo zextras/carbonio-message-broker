@@ -44,7 +44,7 @@ makedepends:yum=(
   "python3"
 )
 sources=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.7/rabbitmq-server-3.10.7.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.25/rabbitmq-server-3.10.25.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
   "${pkgname}-set-admin"
@@ -83,7 +83,7 @@ hashsums=(
   "f3d8206edfcb1a8ba815060b0099bb132304813ba953a5866456fe7633746523"
   "4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0"
   "747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0"
-  "423222ccb3965b013b737ccdcd6b072cd5f602aafb29d4905748beee255438d8"
+  "75de905d307ddc252a348cae928bcb0a4e5af4ae51c9bb300741c413a8895050"
   "a52b2310ed0ebbec2c857c1b9ca6e50c8de672c9f2cbcd33df92a534c2683037"
   "fca7d97b628bb1a1b394f48adbb952cc5a5eefd1ae2be5e51bad3c062da7b02f"
   "5dbf5efa5179e115d8bbb88d31f8630247594fde945a9c4699a3fdc998d7350e"
@@ -97,7 +97,7 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.10.7
+  cd "${srcdir}"/rabbitmq-server-3.10.25
   patch -Np1 -i ../carbonio-customizations.patch
 
   make \
@@ -110,7 +110,7 @@ package() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.10.7
+  cd "${srcdir}"/rabbitmq-server-3.10.25
 
   make \
     DESTDIR="${pkgdir}" \
@@ -119,7 +119,7 @@ package() {
     install install-bin
 
   # using script wrapper for better bin handling
-  libdir="${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.7"
+  libdir="${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.25"
   install -d "${pkgdir}/opt/zextras/common/bin"
   install -Dm 755 scripts/rabbitmq-script-wrapper \
     -t "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
@@ -165,7 +165,7 @@ package() {
   install -Dm755 ${pkgname}-set-admin \
     "${pkgdir}/usr/bin/${pkgname}-set-admin"
 
-  # Create log folder for carbonio-message-broker  
+  # Create log folder for carbonio-message-broker
   install -d "${pkgdir}/var/log/carbonio/message-broker"
 }
 
