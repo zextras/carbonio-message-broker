@@ -1,5 +1,5 @@
 pkgname="carbonio-message-broker"
-pkgver="0.1.1"
+pkgver="0.1.2"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
 pkgdesclong=(
@@ -44,7 +44,7 @@ makedepends:yum=(
   "python3"
 )
 sources=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.10.7/rabbitmq-server-3.10.7.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.6/rabbitmq-server-3.12.6.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
   "${pkgname}-set-admin"
@@ -72,7 +72,7 @@ backup=(
 )
 hashsums=(
   "skip"
-  "4a9b2343edf855bcc3417b6beea2b2b4a7b139305e6ab321dec6e7aae5acc020"
+  "9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122"
   "b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b"
   "7840725dc3d490d3ff7610ea176db9025df084f3adfecf6cf6bbadf22f56a7f1"
   "1567bf5c63c5d01c8c58d33e1c3f05ec3068d64f96aff3147b7a9afaff7ab79a"
@@ -83,7 +83,7 @@ hashsums=(
   "f3d8206edfcb1a8ba815060b0099bb132304813ba953a5866456fe7633746523"
   "4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0"
   "747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0"
-  "423222ccb3965b013b737ccdcd6b072cd5f602aafb29d4905748beee255438d8"
+  "f85b87f14196d251d7d00f2a5c08b091301f51cd32d2bc6e106e02bd4f81edce"
   "a52b2310ed0ebbec2c857c1b9ca6e50c8de672c9f2cbcd33df92a534c2683037"
   "fca7d97b628bb1a1b394f48adbb952cc5a5eefd1ae2be5e51bad3c062da7b02f"
   "5dbf5efa5179e115d8bbb88d31f8630247594fde945a9c4699a3fdc998d7350e"
@@ -97,7 +97,7 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.10.7
+  cd "${srcdir}"/rabbitmq-server-3.12.6
   patch -Np1 -i ../carbonio-customizations.patch
 
   make \
@@ -110,7 +110,7 @@ package() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.10.7
+  cd "${srcdir}"/rabbitmq-server-3.12.6
 
   make \
     DESTDIR="${pkgdir}" \
@@ -119,7 +119,7 @@ package() {
     install install-bin
 
   # using script wrapper for better bin handling
-  libdir="${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.10.7"
+  libdir="${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.12.6"
   install -d "${pkgdir}/opt/zextras/common/bin"
   install -Dm 755 scripts/rabbitmq-script-wrapper \
     -t "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
@@ -165,7 +165,7 @@ package() {
   install -Dm755 ${pkgname}-set-admin \
     "${pkgdir}/usr/bin/${pkgname}-set-admin"
 
-  # Create log folder for carbonio-message-broker  
+  # Create log folder for carbonio-message-broker
   install -d "${pkgdir}/var/log/carbonio/message-broker"
 }
 
