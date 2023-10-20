@@ -1,7 +1,7 @@
 {
   "name": "carbonio-message-broker",
   "description": "Message broker for carbonio CE",
-  "build_dir": "/tmp/",
+  "buildDir": "/tmp/",
   "output": "artifacts",
   "projects": [
     {

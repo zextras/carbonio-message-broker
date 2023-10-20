@@ -2,16 +2,13 @@ pkgname="carbonio-message-broker"
 pkgver="0.1.2"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
-pkgdesclong=(
-  "Carbonio message broker"
-)
 url="https://www.zextras.com/"
 maintainer="Zextras <packages@zextras.com>"
-arch="all"
+arch=('x86_64')
 license=("MPL")
 section="utils"
 priority="optional"
-depends:apt=(
+depends__apt=(
   "adduser"
   "carbonio-erlang"
   "carbonio-openssl"
@@ -23,13 +20,14 @@ depends:apt=(
   "service-discover"
   "socat"
 )
-makedepends:apt=(
+makedepends__apt=(
   "carbonio-elixir"
   "carbonio-erlang"
   "carbonio-openssl"
   "python3"
+  "rsync"
 )
-depends:yum=(
+depends__yum=(
   "carbonio-erlang"
   "carbonio-openssl"
   "pending-setups"
@@ -37,13 +35,14 @@ depends:yum=(
   "service-discover"
   "socat"
 )
-makedepends:yum=(
+makedepends__yum=(
   "carbonio-elixir"
   "carbonio-erlang"
   "carbonio-openssl"
   "python3"
+  "rsync"
 )
-sources=(
+source=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.6/rabbitmq-server-3.12.6.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
@@ -65,32 +64,30 @@ sources=(
   "service-protocol.json"
 )
 backup=(
-  "/etc/carbonio/message-broker/enabled_plugins"
-  "/etc/carbonio/message-broker/rabbitmq-env.conf"
-  "/etc/carbonio/message-broker/conf.d/rabbitmq.conf"
-  "/etc/zextras/service-discover/${pkgname}.hcl"
+  "etc/carbonio/message-broker/enabled_plugins"
+  "etc/carbonio/message-broker/rabbitmq-env.conf"
+  "etc/carbonio/message-broker/conf.d/rabbitmq.conf"
+  "etc/zextras/service-discover/${pkgname}.hcl"
 )
-hashsums=(
-  "skip"
-  "9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122"
-  "b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b"
-  "7840725dc3d490d3ff7610ea176db9025df084f3adfecf6cf6bbadf22f56a7f1"
-  "1567bf5c63c5d01c8c58d33e1c3f05ec3068d64f96aff3147b7a9afaff7ab79a"
-  "ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6"
-  "21f04e61e8bd116ccdfcf16745855bae3f3e9e3b91c34a64e30e3308589d703a"
-  "264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2"
-  "98f8984a2bbdc98718c0997fbeb891a96caf69363da550d8302aad9615b03b0f"
-  "f3d8206edfcb1a8ba815060b0099bb132304813ba953a5866456fe7633746523"
-  "4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0"
-  "747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0"
-  "f85b87f14196d251d7d00f2a5c08b091301f51cd32d2bc6e106e02bd4f81edce"
-  "a52b2310ed0ebbec2c857c1b9ca6e50c8de672c9f2cbcd33df92a534c2683037"
-  "fca7d97b628bb1a1b394f48adbb952cc5a5eefd1ae2be5e51bad3c062da7b02f"
-  "5dbf5efa5179e115d8bbb88d31f8630247594fde945a9c4699a3fdc998d7350e"
-  "070dd68fd7844f77db6f7bf470c59a66300b2d2ea920eaf25382e7b7a7c5d9c2"
-  "6992e75cf19e260751db05fb6baabb851fac66219b307986ed76527036f7eddd"
-  "a17e76860ec0ed475e08de55938e6e123a88528a05d6b758d4cdcc34f7f90e33"
-)
+sha256sums=('4010e046962539a44e21b826a4e1d6db0cd42e05eb216d48c49d788efcbf611e'
+  '9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122'
+  'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
+  '7840725dc3d490d3ff7610ea176db9025df084f3adfecf6cf6bbadf22f56a7f1'
+  '1567bf5c63c5d01c8c58d33e1c3f05ec3068d64f96aff3147b7a9afaff7ab79a'
+  'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
+  '21f04e61e8bd116ccdfcf16745855bae3f3e9e3b91c34a64e30e3308589d703a'
+  '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
+  '98f8984a2bbdc98718c0997fbeb891a96caf69363da550d8302aad9615b03b0f'
+  'f3d8206edfcb1a8ba815060b0099bb132304813ba953a5866456fe7633746523'
+  '4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0'
+  '747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0'
+  'f85b87f14196d251d7d00f2a5c08b091301f51cd32d2bc6e106e02bd4f81edce'
+  'a52b2310ed0ebbec2c857c1b9ca6e50c8de672c9f2cbcd33df92a534c2683037'
+  'a9093095e09fc53b01e9958e08d7dceaeef05146463263e4595589d7f9614a73'
+  '5dbf5efa5179e115d8bbb88d31f8630247594fde945a9c4699a3fdc998d7350e'
+  '070dd68fd7844f77db6f7bf470c59a66300b2d2ea920eaf25382e7b7a7c5d9c2'
+  '6992e75cf19e260751db05fb6baabb851fac66219b307986ed76527036f7eddd'
+  'a17e76860ec0ed475e08de55938e6e123a88528a05d6b758d4cdcc34f7f90e33')
 
 build() {
   export PATH="/opt/zextras/common/bin/:$PATH"
@@ -201,7 +198,7 @@ prerm() {
   fi
 }
 
-postrm:apt() {
+postrm__apt() {
   if [ "$1" = "purge" ]; then
     rm -rf /var/lib/carbonio-message-broker/mnesia/
   fi
@@ -212,7 +209,7 @@ postrm:apt() {
   fi
 }
 
-postrm:yum() {
+postrm__yum() {
   rm -f /etc/carbonio/message-broker/service-discover/token
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
