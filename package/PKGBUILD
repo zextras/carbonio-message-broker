@@ -1,5 +1,5 @@
 pkgname="carbonio-message-broker"
-pkgver="0.1.2"
+pkgver="0.1.3"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
@@ -116,14 +116,28 @@ package() {
     install install-bin
 
   # using script wrapper for better bin handling
-  libdir="${pkgdir}/opt/zextras/common/lib/rabbitmq/lib/rabbitmq_server-3.12.6"
   install -d "${pkgdir}/opt/zextras/common/bin"
   install -Dm 755 scripts/rabbitmq-script-wrapper \
     -t "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
-  for script in "${libdir}"/sbin/rabbit*; do
-    ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
-      "${pkgdir}/opt/zextras/common/bin/${script#${libdir}/sbin/}"
-  done
+
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-defaults"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-diagnostics"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-env"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-plugins"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-queues"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-server"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-streams"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmq-upgrade"
+  ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
+    "${pkgdir}/opt/zextras/common/bin/rabbitmqctl"
 
   install -Dm644 "${srcdir}/rabbitmq-env.conf" \
     "${pkgdir}/etc/carbonio/message-broker/rabbitmq-env.conf"
