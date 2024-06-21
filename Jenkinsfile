@@ -57,9 +57,8 @@ pipeline {
                 sh 'sudo mv auth.conf /etc/apt'
             }
             sh '''
-              sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-playground focal main" > zextras.list
+              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel focal main" > zextras.list
               sudo mv zextras.list /etc/apt/sources.list.d/
-              sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
             '''
             sh '''
               mkdir /tmp/broker
@@ -98,9 +97,8 @@ pipeline {
                 sh 'sudo mv auth.conf /etc/apt'
             }
             sh '''
-              sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-playground jammy main" > zextras.list
+              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel jammy main" > zextras.list
               sudo mv zextras.list /etc/apt/sources.list.d/
-              sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
             '''
             sh '''
               mkdir /tmp/broker
@@ -144,10 +142,10 @@ pipeline {
               passwordVariable: 'SECRET',
               usernameVariable: 'USERNAME')]) {
                 sh 'echo "[Zextras]" > zextras.repo'
-                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-playground/" >> zextras.repo'
+                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/" >> zextras.repo'
                 sh 'echo "enabled=1" >> zextras.repo'
                 sh 'echo "gpgcheck=0" >> zextras.repo'
-                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-playground/repomd.xml.key" >> zextras.repo'
+                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/repomd.xml.key" >> zextras.repo'
                 sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
             }
             sh '''
@@ -182,10 +180,10 @@ pipeline {
               passwordVariable: 'SECRET',
               usernameVariable: 'USERNAME')]) {
                 sh 'echo "[Zextras]" > zextras.repo'
-                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-playground/" >> zextras.repo'
+                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-devel/" >> zextras.repo'
                 sh 'echo "enabled=1" >> zextras.repo'
                 sh 'echo "gpgcheck=0" >> zextras.repo'
-                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-playground/repomd.xml.key" >> zextras.repo'
+                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-devel/repomd.xml.key" >> zextras.repo'
                 sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
             }
             sh '''
