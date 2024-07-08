@@ -20,7 +20,7 @@ get_consul_kv() {
 }
 
 TMP_PATH=$PATH
-export PATH="$PATH:"$RABBITMQ_COMMANDS_FOLDER""
+export PATH="$PATH:$RABBITMQ_COMMANDS_FOLDER"
 get_consul_kv "$MAIN_SERVICE_NAME/admin/username" >/dev/null 2>&1; USERNAME=$CONSUL_VALUE
 get_consul_kv "$MAIN_SERVICE_NAME/admin/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VALUE
 
