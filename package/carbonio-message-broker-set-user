@@ -20,9 +20,9 @@ get_consul_kv() {
 }
 
 TMP_PATH=$PATH
-export PATH="$PATH:"$RABBITMQ_COMMANDS_FOLDER""
-get_consul_kv "$MAIN_SERVICE_NAME/username" >/dev/null 2>&1; USERNAME=$CONSUL_VALUE
-get_consul_kv "$MAIN_SERVICE_NAME/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VALUE
+export PATH="$PATH:$RABBITMQ_COMMANDS_FOLDER"
+get_consul_kv "$MAIN_SERVICE_NAME/default/username" >/dev/null 2>&1; USERNAME=$CONSUL_VALUE
+get_consul_kv "$MAIN_SERVICE_NAME/default/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VALUE
 
 RESULT=999
 if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
@@ -32,10 +32,10 @@ fi
 
 if [[ "$RESULT" != "0" ]]; then
   if [[ "$USERNAME" != "$MAIN_SERVICE_NAME" ]]; then
-    consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/username" "$MAIN_SERVICE_NAME"
+    consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/default/username" "$MAIN_SERVICE_NAME"
   fi
   PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
-  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/password" "$PASSWORD"
+  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/default/password" "$PASSWORD"
   rabbitmqctl add_user --node "$RABBITMQ_NODE_NAME" $MAIN_SERVICE_NAME "$PASSWORD" >/dev/null 2>&1
   EXIT_CODE=$?
   if [[ "$EXIT_CODE" != "0" ]]; then
