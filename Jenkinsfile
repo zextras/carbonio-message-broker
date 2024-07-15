@@ -7,9 +7,6 @@ pipeline {
     booleanParam defaultValue: false,
     description: 'Whether to upload the packages in playground repository',
     name: 'PLAYGROUND'
-    booleanParam defaultValue: false,
-    description: 'Whether to upload the packages in rc repository',
-    name: 'RC'
   }
   options {
     skipDefaultCheckout()
@@ -32,13 +29,7 @@ pipeline {
         stash includes: '**', name: 'project'
       }
     }
-    stage("Ubuntu packages") {
-      when {
-        anyOf {
-          branch "main"
-          expression { params.PLAYGROUND == true }
-        }
-      }
+    stage("Building packages") {
       parallel {
         stage('Ubuntu 20') {
           agent {
@@ -63,14 +54,21 @@ pipeline {
             sh '''
               mkdir /tmp/broker
               mv * /tmp/broker
-              sudo yap build ubuntu-focal /tmp/broker
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build ubuntu-focal /tmp/broker -r ${timestamp}"
+              } else {
+                sh 'sudo yap build ubuntu-focal /tmp/broker'
+              }
+            }
             stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
           }
           post {
             failure {
               script {
-                if ("main".equals(env.BRANCH_NAME)) {
+                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -103,14 +101,21 @@ pipeline {
             sh '''
               mkdir /tmp/broker
               mv * /tmp/broker
-              sudo yap build ubuntu-jammy /tmp/broker
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build ubuntu-jammy /tmp/broker -r ${timestamp}"
+              } else {
+                sh 'sudo yap build ubuntu-jammy /tmp/broker'
+              }
+            }
             stash includes: 'artifacts/*jammy*.deb', name: 'artifacts-ubuntu-jammy'
           }
           post {
             failure {
               script {
-                if ("main".equals(env.BRANCH_NAME)) {
+                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -120,16 +125,6 @@ pipeline {
             }
           }
         }
-      }
-    }
-    stage("RHEL packages") {
-      when {
-        anyOf {
-          branch "main"
-          expression { params.PLAYGROUND == true }
-        }
-      }
-      parallel {
         stage('Rocky 8') {
           agent {
             node {
@@ -151,14 +146,21 @@ pipeline {
             sh '''
               mkdir /tmp/broker
               mv * /tmp/broker
-              sudo yap build rocky-8 /tmp/broker
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build rocky-8 /tmp/broker -r ${timestamp}"
+              } else {
+                sh 'sudo yap build rocky-8 /tmp/broker'
+              }
+            }
             stash includes: 'artifacts/x86_64/*el8*.rpm', name: 'artifacts-rocky-8'
           }
           post {
             failure {
               script {
-                if ("main".equals(env.BRANCH_NAME)) {
+                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -189,14 +191,21 @@ pipeline {
             sh '''
               mkdir /tmp/broker
               mv * /tmp/broker
-              sudo yap build rocky-9 /tmp/broker
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build rocky-9 /tmp/broker -r ${timestamp}"
+              } else {
+                sh 'sudo yap build rocky-9 /tmp/broker'
+              }
+            }
             stash includes: 'artifacts/x86_64/*el9*.rpm', name: 'artifacts-rocky-9'
           }
           post {
             failure {
               script {
-                if ("main".equals(env.BRANCH_NAME)) {
+                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -253,7 +262,7 @@ pipeline {
     }
     stage('Upload To Devel') {
       when {
-        branch "main"
+        branch "devel"
       }
       steps {
         unstash 'artifacts-ubuntu-focal'
@@ -296,19 +305,14 @@ pipeline {
       post {
         failure {
           script {
-            if (env.BRANCH_NAME.equals("main")) {
-              sendFailureEmail(STAGE_NAME)
-            }
+            sendFailureEmail(STAGE_NAME)
           }
         }
       }
     }
     stage('Upload To Release') {
       when {
-        allOf {
-          branch "main"
-          expression { params.RC == true }
-        }
+        buildingTag()
       }
       steps {
         unstash 'artifacts-ubuntu-focal'
@@ -418,9 +422,7 @@ pipeline {
       post {
         failure {
           script {
-            if (env.BRANCH_NAME.equals("main")) {
-              sendFailureEmail(STAGE_NAME)
-            }
+            sendFailureEmail(STAGE_NAME)
           }
         }
       }
