@@ -1,5 +1,5 @@
 pkgname="carbonio-message-broker"
-pkgver="0.1.4"
+pkgver="0.1.5"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
@@ -43,7 +43,7 @@ makedepends__yum=(
   "rsync"
 )
 source=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.6/rabbitmq-server-3.12.6.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.6/rabbitmq-server-3.13.6.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
   "${pkgname}-set-admin"
@@ -69,7 +69,7 @@ backup=(
   "etc/carbonio/message-broker/conf.d/rabbitmq.conf"
   "etc/zextras/service-discover/${pkgname}.hcl"
 )
-sha256sums=('4010e046962539a44e21b826a4e1d6db0cd42e05eb216d48c49d788efcbf611e'
+sha256sums=('cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
   '9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122'
   'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
   'f28714c65965eccc9417ef6ca8c75d253fd3d55b2160ffb7fbea2c30bb5f1ec0'
@@ -81,7 +81,7 @@ sha256sums=('4010e046962539a44e21b826a4e1d6db0cd42e05eb216d48c49d788efcbf611e'
   'f3d8206edfcb1a8ba815060b0099bb132304813ba953a5866456fe7633746523'
   '4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0'
   '747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0'
-  '44065f7e4a8a78d80d53e269d21d06e9ab1fded0f5845b49971838f97d5fd6e1'
+  '55b364de83c3271c25f8c47ec4eb79211261d5bf658309c69ea9b26647e5015e'
   'a52b2310ed0ebbec2c857c1b9ca6e50c8de672c9f2cbcd33df92a534c2683037'
   'a9093095e09fc53b01e9958e08d7dceaeef05146463263e4595589d7f9614a73'
   '174b59c3be3c20770e18b6b746258620ce4d363c98aae5c10903cb69f72eab1c'
@@ -94,7 +94,7 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.12.6
+  cd "${srcdir}"/rabbitmq-server-3.13.6
   patch -Np1 -i ../carbonio-customizations.patch
 
   make \
@@ -107,7 +107,7 @@ package() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.12.6
+  cd "${srcdir}"/rabbitmq-server-3.13.6
 
   make \
     DESTDIR="${pkgdir}" \
