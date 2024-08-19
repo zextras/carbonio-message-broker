@@ -1,6 +1,6 @@
 pkgname="carbonio-message-broker"
 pkgver="0.1.5"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
 maintainer="Zextras <packages@zextras.com>"
@@ -26,6 +26,7 @@ makedepends__apt=(
   "carbonio-openssl"
   "python3"
   "rsync"
+  "socat"
 )
 depends__yum=(
   "carbonio-erlang"
@@ -41,6 +42,7 @@ makedepends__yum=(
   "carbonio-openssl"
   "python3"
   "rsync"
+  "socat"
 )
 source=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.6/rabbitmq-server-3.13.6.tar.xz"
