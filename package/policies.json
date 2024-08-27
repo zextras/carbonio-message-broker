@@ -1,9 +1,6 @@
 {
   "key_prefix": [
     {
-      "rabbitmq/": {
-        "policy": "write"
-      },
       "carbonio-message-broker/": {
         "policy": "write"
       },
@@ -22,9 +19,6 @@
   "service": [
     {
       "carbonio-message-broker-sidecar-proxy": {
-        "policy": "write"
-      },
-      "rabbitmq": {
         "policy": "write"
       },
       "carbonio-message-broker": {
