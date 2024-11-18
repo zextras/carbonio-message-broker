@@ -64,6 +64,7 @@ source=(
   "rabbitmq-env.conf"
   "rabbitmq.conf"
   "service-protocol.json"
+  "carbonio-prometheus-rabbit-exporter.hcl"
 )
 backup=(
   "etc/carbonio/message-broker/enabled_plugins"
@@ -84,12 +85,13 @@ sha256sums=('cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
   '4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0'
   '747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0'
   '55b364de83c3271c25f8c47ec4eb79211261d5bf658309c69ea9b26647e5015e'
-  'a52b2310ed0ebbec2c857c1b9ca6e50c8de672c9f2cbcd33df92a534c2683037'
-  'a9093095e09fc53b01e9958e08d7dceaeef05146463263e4595589d7f9614a73'
+  'cdabc266c085fe9385ee661e1610748e82cc9a9a9fa4d622ecaca32f11594275'
+  'f6dc61bd646dd29ce8fda28ceae9135b310fec9869452440d2f0e379d769d2ce'
   '174b59c3be3c20770e18b6b746258620ce4d363c98aae5c10903cb69f72eab1c'
   '070dd68fd7844f77db6f7bf470c59a66300b2d2ea920eaf25382e7b7a7c5d9c2'
   '6992e75cf19e260751db05fb6baabb851fac66219b307986ed76527036f7eddd'
-  'a17e76860ec0ed475e08de55938e6e123a88528a05d6b758d4cdcc34f7f90e33')
+  'a17e76860ec0ed475e08de55938e6e123a88528a05d6b758d4cdcc34f7f90e33'
+  'b7c8554cbc8d77e1bde1d02ed54e58b4ba8c2bb385861ce2faa34f93a50d4ed6')
 
 build() {
   export PATH="/opt/zextras/common/bin/:$PATH"
@@ -165,6 +167,8 @@ package() {
     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
   install -Dm644 ${pkgname}.hcl \
     "${pkgdir}/etc/zextras/service-discover/${pkgname}.hcl"
+  install -Dm644 carbonio-prometheus-rabbit-exporter.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-prometheus-rabbit-exporter.hcl"
   install -Dm644 ${pkgname}.service \
     "${pkgdir}/lib/systemd/system/${pkgname}.service"
   install -Dm644 ${pkgname}-sidecar.service \
