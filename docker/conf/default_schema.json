@@ -1,0 +1,33 @@
+{
+  "rabbit_version": "3.13.6",
+  "rabbitmq_version": "3.13.6",
+  "product_name": "RabbitMQ",
+  "product_version": "3.13.6",
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "topic_permissions": [],
+  "parameters": [],
+  "policies": [],
+  "queues": [],
+  "exchanges": [],
+  "bindings": [],
+  "users": [
+    {
+      "name": "guest",
+      "password": "guest",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ]
+}
