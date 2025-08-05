@@ -6,19 +6,17 @@ After=network-online.target
 PartOf=carbonio.target
 
 [Service]
+User=carbonio-message-broker
 Type=simple
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/message-broker/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-message-broker
+ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=15
-User=carbonio-message-broker
-KillMode=process
 KillSignal=SIGINT
 LimitNOFILE=65536
-TimeoutSec=120
-TimeoutStopSec=120
 
 [Install]
 WantedBy=carbonio.target
