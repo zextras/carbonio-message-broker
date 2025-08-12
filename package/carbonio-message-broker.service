@@ -23,4 +23,4 @@ Environment=PATH="/opt/zextras/common/bin:/opt/zextras/common/lib/erlang/bin:/us
 Environment=RABBITMQ_CONF_ENV_FILE="/etc/carbonio/message-broker/rabbitmq-env.conf"
 
 [Install]
-WantedBy=carbonio.target
+WantedBy=multi-user.target
