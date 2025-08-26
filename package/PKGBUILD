@@ -1,5 +1,5 @@
 pkgname="carbonio-message-broker"
-pkgver="0.2.1"
+pkgver="0.2.2"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
@@ -72,16 +72,17 @@ backup=(
   "etc/carbonio/message-broker/conf.d/rabbitmq.conf"
   "etc/zextras/service-discover/${pkgname}.hcl"
 )
-sha256sums=('cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
+sha256sums=(
+  'cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
   '9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122'
   'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
   'f28714c65965eccc9417ef6ca8c75d253fd3d55b2160ffb7fbea2c30bb5f1ec0'
   'b2fcb84d5a226c5942d7bd25689236492e817f2bc8f49e53d5fc7e2d7dc0a0ed'
   'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
-  'cd1a3bf2eed7e769e60fb00261d46e5cd893be66e24c4bc84ef8d879d7b8e3f5'
+  '019fd5bf5bd2e89b3ba4b5ca4c74b2dfbada24020db8d7dff51fd64f818e64db'
   '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
   '98f8984a2bbdc98718c0997fbeb891a96caf69363da550d8302aad9615b03b0f'
-  'f3d8206edfcb1a8ba815060b0099bb132304813ba953a5866456fe7633746523'
+  '6814bf9ac1d199d7297e09c6b08e9a4616a04947f2ca34e35675eae758e180b8'
   '4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0'
   '747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0'
   '55b364de83c3271c25f8c47ec4eb79211261d5bf658309c69ea9b26647e5015e'
@@ -91,7 +92,8 @@ sha256sums=('cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
   '070dd68fd7844f77db6f7bf470c59a66300b2d2ea920eaf25382e7b7a7c5d9c2'
   '6992e75cf19e260751db05fb6baabb851fac66219b307986ed76527036f7eddd'
   'a17e76860ec0ed475e08de55938e6e123a88528a05d6b758d4cdcc34f7f90e33'
-  'b7c8554cbc8d77e1bde1d02ed54e58b4ba8c2bb385861ce2faa34f93a50d4ed6')
+  'b7c8554cbc8d77e1bde1d02ed54e58b4ba8c2bb385861ce2faa34f93a50d4ed6'
+)
 
 build() {
   export PATH="/opt/zextras/common/bin/:$PATH"
@@ -187,10 +189,10 @@ package() {
 }
 
 postinst() {
-  getent group 'carbonio-message-broker' >/dev/null ||
-    groupadd -r 'carbonio-message-broker'
-  getent passwd 'carbonio-message-broker' >/dev/null ||
-    useradd -r -m -g 'carbonio-message-broker' -d /var/lib/carbonio-message-broker -s /sbin/nologin 'carbonio-message-broker'
+  getent group 'carbonio-message-broker' >/dev/null \
+    || groupadd -r 'carbonio-message-broker'
+  getent passwd 'carbonio-message-broker' >/dev/null \
+    || useradd -r -m -g 'carbonio-message-broker' -d /var/lib/carbonio-message-broker -s /sbin/nologin 'carbonio-message-broker'
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
