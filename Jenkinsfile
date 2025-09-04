@@ -396,13 +396,13 @@ pipeline {
               }
             }
           }
-          stage('Publish docker image') {
-            steps {
-              container('dind') {
-                withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                  buildContainer('Carbonio Message Broker', '$(cat docker/description.md)',
-                    'docker/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-message-broker:latest')
-                }
+        }
+        stage('Publish docker image') {
+          steps {
+            container('dind') {
+              withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                buildContainer('Carbonio Message Broker', '$(cat docker/description.md)',
+                  'docker/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-message-broker:latest')
               }
             }
           }
