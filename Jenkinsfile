@@ -26,10 +26,6 @@ pipeline {
       label 'base'
     }
   }
-  environment {
-    NETWORK_OPTS = '--network ci_agent'
-    FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
-  }
   stages {
     stage('Checkout & Stash') {
       steps {
@@ -80,13 +76,6 @@ pipeline {
             }
           }
           post {
-            failure {
-              script {
-                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
-                  sendFailureEmail(STAGE_NAME)
-                }
-              }
-            }
             always {
               archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
             }
@@ -130,13 +119,6 @@ pipeline {
             }
           }
           post {
-            failure {
-              script {
-                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
-                  sendFailureEmail(STAGE_NAME)
-                }
-              }
-            }
             always {
               archiveArtifacts artifacts: 'artifacts/*jammy*.deb', fingerprint: true
             }
@@ -180,13 +162,6 @@ pipeline {
             }
           }
           post {
-            failure {
-              script {
-                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
-                  sendFailureEmail(STAGE_NAME)
-                }
-              }
-            }
             always {
               archiveArtifacts artifacts: 'artifacts/*noble*.deb', fingerprint: true
             }
@@ -228,13 +203,6 @@ pipeline {
             }
           }
           post {
-            failure {
-              script {
-                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
-                  sendFailureEmail(STAGE_NAME)
-                }
-              }
-            }
             always {
               archiveArtifacts artifacts: 'artifacts/*el8*.rpm', fingerprint: true
             }
@@ -276,13 +244,6 @@ pipeline {
             }
           }
           post {
-            failure {
-              script {
-                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
-                  sendFailureEmail(STAGE_NAME)
-                }
-              }
-            }
             always {
               archiveArtifacts artifacts: 'artifacts/*el9*.rpm', fingerprint: true
             }
@@ -387,13 +348,6 @@ pipeline {
                 ]
               }"""
               server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-            }
-          }
-          post {
-            failure {
-              script {
-                sendFailureEmail(STAGE_NAME)
-              }
             }
           }
         }
@@ -526,13 +480,6 @@ pipeline {
               server.publishBuildInfo buildInfo
             }
           }
-          post {
-            failure {
-              script {
-                sendFailureEmail(STAGE_NAME)
-              }
-            }
-          }
         }
         stage('Publish docker image') {
           steps {
@@ -547,19 +494,4 @@ pipeline {
       }
     }
   }
-}
-
-void sendFailureEmail(String step) {
-  def commitInfo =sh(
-     script: 'git log -1 --pretty=tformat:\'<ul><li>Revision: %H</li><li>Title: %s</li><li>Author: %ae</li></ul>\'',
-     returnStdout: true
-  )
-  emailext body: """\
-    <b>${step.capitalize()}</b> step has failed on trunk.<br /><br />
-    Last commit info: <br />
-    ${commitInfo}<br /><br />
-    Check the failing build at the <a href=\"${BUILD_URL}\">following link</a><br />
-  """,
-  subject: "[MESSAGE BROKER TRUNK FAILURE] Trunk ${step} step failure",
-  to: FAILURE_EMAIL_RECIPIENTS
 }
