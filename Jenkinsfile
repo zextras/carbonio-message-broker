@@ -302,7 +302,7 @@ pipeline {
     }
     stage('Upload To Devel') {
       when {
-        branch "devel"
+        expression { params.PLAYGROUND == true }
       }
       parallel {
         stage('Publish package') {
@@ -365,7 +365,7 @@ pipeline {
     }
     stage('Upload To Release') {
       when {
-        buildingTag()
+        expression { params.PLAYGROUND == true }
       }
       parallel {
         stage('Publish package') {
