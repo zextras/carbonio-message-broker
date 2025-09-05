@@ -23,7 +23,7 @@ pipeline {
   }
   agent {
     node {
-      label 'base'
+      label 'zextras-v1'
     }
   }
   stages {
