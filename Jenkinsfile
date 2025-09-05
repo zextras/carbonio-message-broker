@@ -2,6 +2,14 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
+def buildContainer(String title, String description, String dockerfile, String tag) {
+  sh 'docker build --platform linux/amd64,linux/arm64 ' +
+    '--label org.opencontainers.image.title="' + title + '" ' +
+    '--label org.opencontainers.image.description="' + description + '" ' +
+    '--label org.opencontainers.image.vendor="Zextras" ' +
+    '-f ' + dockerfile + ' -t ' + tag + '--push .'
+}
+
 pipeline {
   parameters {
     booleanParam defaultValue: false,
@@ -15,11 +23,10 @@ pipeline {
   }
   agent {
     node {
-      label 'base'
+      label 'zextras-v1'
     }
   }
   environment {
-    NETWORK_OPTS = '--network ci_agent'
     FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
   }
   stages {
@@ -34,56 +41,6 @@ pipeline {
     }
     stage("Building packages") {
       parallel {
-        stage('Ubuntu 20') {
-          agent {
-            node {
-              label 'yap-ubuntu-20-v1'
-            }
-          }
-          steps {
-            container('yap') {
-              unstash 'project'
-              withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-                passwordVariable: 'SECRET',
-                usernameVariable: 'USERNAME')]) {
-                  sh 'echo "machine zextras.jfrog.io" >> auth.conf'
-                  sh 'echo "login $USERNAME" >> auth.conf'
-                  sh 'echo "password $SECRET" >> auth.conf'
-                  sh 'sudo mv auth.conf /etc/apt'
-              }
-              sh '''
-                sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel focal main" > zextras.list
-                sudo mv zextras.list /etc/apt/sources.list.d/
-              '''
-              sh '''
-                mkdir /tmp/broker
-                mv * /tmp/broker
-              '''
-              script {
-                sh 'sudo yap prepare ubuntu'
-                if (BRANCH_NAME == 'devel') {
-                  def timestamp = new Date().format('yyyyMMddHHmmss')
-                  sh "sudo yap build ubuntu-focal /tmp/broker -r ${timestamp}"
-                } else {
-                  sh 'sudo yap build ubuntu-focal /tmp/broker'
-                }
-              }
-              stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
-            }
-          }
-          post {
-            failure {
-              script {
-                if ("main".equals(BRANCH_NAME) || "devel".equals(BRANCH_NAME)) {
-                  sendFailureEmail(STAGE_NAME)
-                }
-              }
-            }
-            always {
-              archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
-            }
-          }
-        }
         stage('Ubuntu 22') {
           agent {
             node {
@@ -287,7 +244,6 @@ pipeline {
         expression { params.PLAYGROUND == true }
       }
       steps {
-        unstash 'artifacts-ubuntu-focal'
         unstash 'artifacts-ubuntu-jammy'
         unstash 'artifacts-ubuntu-noble'
         unstash 'artifacts-rocky-8'
@@ -300,11 +256,6 @@ pipeline {
           buildInfo = Artifactory.newBuildInfo()
           uploadSpec = """{
             "files": [
-              {
-                "pattern": "artifacts/*focal*.deb",
-                "target": "ubuntu-playground/pool/",
-                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-              },
               {
                 "pattern": "artifacts/*jammy*.deb",
                 "target": "ubuntu-playground/pool/",
@@ -335,54 +286,62 @@ pipeline {
       when {
         branch "devel"
       }
-      steps {
-        unstash 'artifacts-ubuntu-focal'
-        unstash 'artifacts-ubuntu-jammy'
-        unstash 'artifacts-ubuntu-noble'
-        unstash 'artifacts-rocky-8'
-        unstash 'artifacts-rocky-9'
+      parallel {
+        stage('Publish package') {
+          steps {
+            unstash 'artifacts-ubuntu-jammy'
+            unstash 'artifacts-ubuntu-noble'
+            unstash 'artifacts-rocky-8'
+            unstash 'artifacts-rocky-9'
 
-        script {
-          def server = Artifactory.server 'zextras-artifactory'
-          def buildInfo
-          def uploadSpec
-          buildInfo = Artifactory.newBuildInfo()
-          uploadSpec = """{
-            "files": [
-              {
-                "pattern": "artifacts/*focal*.deb",
-                "target": "ubuntu-devel/pool/",
-                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-              },
-              {
-                "pattern": "artifacts/*jammy*.deb",
-                "target": "ubuntu-devel/pool/",
-                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-              },
-              {
-                "pattern": "artifacts/*noble*.deb",
-                "target": "ubuntu-devel/pool/",
-                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-              },
-              {
-                "pattern": "artifacts/(carbonio-message-broker)-(*).el8.x86_64.rpm",
-                "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
-              },
-              {
-                "pattern": "artifacts/(carbonio-message-broker)-(*).el9.x86_64.rpm",
-                "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
+            script {
+              def server = Artifactory.server 'zextras-artifactory'
+              def buildInfo
+              def uploadSpec
+              buildInfo = Artifactory.newBuildInfo()
+              uploadSpec = """{
+                "files": [
+                  {
+                    "pattern": "artifacts/*jammy*.deb",
+                    "target": "ubuntu-devel/pool/",
+                    "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                  },
+                  {
+                    "pattern": "artifacts/*noble*.deb",
+                    "target": "ubuntu-devel/pool/",
+                    "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                  },
+                  {
+                    "pattern": "artifacts/(carbonio-message-broker)-(*).el8.x86_64.rpm",
+                    "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
+                    "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
+                  },
+                  {
+                    "pattern": "artifacts/(carbonio-message-broker)-(*).el9.x86_64.rpm",
+                    "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
+                    "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
+                  }
+                ]
+              }"""
+              server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+            }
+          }
+          post {
+            failure {
+              script {
+                sendFailureEmail(STAGE_NAME)
               }
-            ]
-          }"""
-          server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+            }
+          }
         }
-      }
-      post {
-        failure {
-          script {
-            sendFailureEmail(STAGE_NAME)
+        stage('Publish docker image') {
+          steps {
+            container('dind') {
+              withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                buildContainer('Carbonio Message Broker', '$(cat docker/description.md)',
+                  'docker/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-message-broker:latest')
+              }
+            }
           }
         }
       }
@@ -392,7 +351,6 @@ pipeline {
         buildingTag()
       }
       steps {
-        unstash 'artifacts-ubuntu-focal'
         unstash 'artifacts-ubuntu-jammy'
         unstash 'artifacts-ubuntu-noble'
         unstash 'artifacts-rocky-8'
@@ -409,11 +367,6 @@ pipeline {
           buildInfo.name += '-ubuntu'
           uploadSpec = """{
             "files": [
-              {
-                "pattern": "artifacts/*focal*.deb",
-                "target": "ubuntu-rc/pool/",
-                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-              },
               {
                 "pattern": "artifacts/*jammy*.deb",
                 "target": "ubuntu-rc/pool/",
