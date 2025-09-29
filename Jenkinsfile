@@ -47,6 +47,43 @@ pipeline {
       }
     }
 
+    stage('Publish docker image') {
+      when {
+        anyOf {
+          branch 'devel'
+          buildingTag()
+          expression { params.PLAYGROUND == true }
+        }
+      }
+      steps {
+        container('dind') {
+          withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+            script {
+              Set<String> tags = []
+              if (env.BRANCH_NAME == 'devel') {
+                tags.add('latest')
+              } else if (env.GIT_TAG) {
+                tags.add(env.GIT_TAG)
+              } else if (params.PLAYGROUND == true) {
+                tags.add(env.BRANCH_NAME.replaceAll('/', '-'))
+              }
+
+              dockerHelper.buildImage([
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-broker',
+                imageTags: tags,
+                dockerfile: 'docker/Dockerfile',
+                ocLabels: [
+                  title: 'Carbonio Message Broker',
+                  descriptionFile: 'docker/description.md',
+                  version: env.GIT_TAG ?: 'devel',
+                ]
+              ])
+            }
+          }
+        }
+      }
+    }
+
     stage('Build deb/rpm') {
       steps {
         echo 'Building deb/rpm packages'
