@@ -17,10 +17,6 @@ pipeline {
     }
   }
 
-  environment {
-    FAILURE_EMAIL_RECIPIENTS = 'smokybeans@zextras.com'
-  }
-
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
     skipDefaultCheckout()
