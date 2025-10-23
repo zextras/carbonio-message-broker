@@ -46,7 +46,7 @@ makedepends__yum=(
   "socat"
 )
 source=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v${rabbit_version}/rabbitmq-server-${rabbit_version}.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v4.1.4/rabbitmq-server-4.1.4.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
   "${pkgname}-set-admin"
@@ -101,7 +101,7 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-${rabbit_version}
+  cd "${srcdir}"/rabbitmq-server-4.1.4
   patch -Np1 -i ../carbonio-customizations.patch
 
   make \
@@ -114,7 +114,7 @@ package() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-${rabbit_version}
+  cd "${srcdir}"/rabbitmq-server-4.1.4
 
   make \
     DESTDIR="${pkgdir}" \
