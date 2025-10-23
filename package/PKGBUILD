@@ -8,7 +8,7 @@ arch=('x86_64')
 license=("MPL-2.0")
 section="utils"
 priority="optional"
-rabbit_version="4.1.4"
+rabbit_version=4.1.4
 depends__apt=(
   "adduser"
   "carbonio-erlang"
