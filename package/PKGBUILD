@@ -45,7 +45,7 @@ makedepends__yum=(
   "socat"
 )
 source=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.6/rabbitmq-server-3.13.6.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v4.1.4/rabbitmq-server-4.1.4.tar.xz"
   "carbonio-customizations.patch"
   "${pkgname}"
   "${pkgname}-set-admin"
