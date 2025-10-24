@@ -106,9 +106,16 @@ build() {
   cd "${srcdir}"/rabbitmq-server-4.1.4
   patch -Np1 -i ../carbonio-customizations.patch
   # Rimuovi il plugin rabbitmq_auth_backend_oauth2 per evitare errori di build
-  rm -rf deps/rabbitmq_auth_backend_oauth2
-mkdir -p deps/oauth2_client
-echo -e "all:\n\t@true" > deps/oauth2_client/Makefile
+  python3 - <<'PY'
+from pathlib import Path
+
+for relpath in ("plugins.mk", "Makefile"):
+    path = Path(relpath)
+    text = path.read_text()
+    text = text.replace("rabbitmq_auth_backend_oauth2 ", "")
+    text = text.replace(" rabbitmq_auth_backend_oauth2", "")
+    path.write_text(text)
+PY
   make \
     PREFIX=/opt/zextras/common \
     RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
