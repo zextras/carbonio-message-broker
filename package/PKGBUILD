@@ -105,6 +105,7 @@ build() {
   
   cd "${srcdir}"/rabbitmq-server-4.1.4
   patch -Np1 -i ../carbonio-customizations.patch
+  rm -rf deps/oauth2_client
 
   make \
     PREFIX=/opt/zextras/common \
