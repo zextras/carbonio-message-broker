@@ -106,11 +106,6 @@ build() {
   cd "${srcdir}"/rabbitmq-server-4.1.4
   patch -Np1 -i ../carbonio-customizations.patch
 
-  # Fetch oauth2_client dependency if missing
-  if [ ! -d deps/oauth2_client ]; then
-    git clone --depth 1 --branch v1.0.0 https://github.com/rabbitmq/oauth2_client.git deps/oauth2_client
-  fi
-
   make \
     PREFIX=/opt/zextras/common \
     RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
