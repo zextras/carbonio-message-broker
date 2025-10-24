@@ -105,8 +105,8 @@ build() {
   
   cd "${srcdir}"/rabbitmq-server-4.1.4
   patch -Np1 -i ../carbonio-customizations.patch
-  rm -rf deps/oauth2_client
-
+mkdir -p deps/oauth2_client
+echo -e "all:\n\t@true" > deps/oauth2_client/Makefile
   make \
     PREFIX=/opt/zextras/common \
     RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
