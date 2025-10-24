@@ -105,6 +105,8 @@ build() {
   
   cd "${srcdir}"/rabbitmq-server-4.1.4
   patch -Np1 -i ../carbonio-customizations.patch
+  # Rimuovi il plugin rabbitmq_auth_backend_oauth2 per evitare errori di build
+  rm -rf deps/rabbitmq_auth_backend_oauth2
 mkdir -p deps/oauth2_client
 echo -e "all:\n\t@true" > deps/oauth2_client/Makefile
   make \
