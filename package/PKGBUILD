@@ -46,11 +46,11 @@ makedepends__yum=(
 )
 source=(
   "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.6/rabbitmq-server-3.13.6.tar.xz"
+  "141-${pkgname}-setup.sh"
   "carbonio-customizations.patch"
   "${pkgname}"
   "${pkgname}-set-admin"
   "${pkgname}-set-user"
-  "${pkgname}-setup.sh"
   "${pkgname}-sidecar.service"
   "${pkgname}.hcl"
   "${pkgname}.logrotate"
@@ -74,11 +74,11 @@ backup=(
 )
 sha256sums=(
   'cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
+  'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
   '9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122'
   'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
   'f28714c65965eccc9417ef6ca8c75d253fd3d55b2160ffb7fbea2c30bb5f1ec0'
   'b2fcb84d5a226c5942d7bd25689236492e817f2bc8f49e53d5fc7e2d7dc0a0ed'
-  'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
   '019fd5bf5bd2e89b3ba4b5ca4c74b2dfbada24020db8d7dff51fd64f818e64db'
   '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
   '98f8984a2bbdc98718c0997fbeb891a96caf69363da550d8302aad9615b03b0f'
@@ -161,6 +161,8 @@ package() {
     "${pkgdir}/etc/logrotate.d/${pkgname}"
 
   cd ${srcdir}
+  install -Dm644 141-${pkgname}-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/141-${pkgname}-setup.sh"
   install -Dm644 intentions.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/intentions.json"
   install -Dm644 policies.json \
@@ -175,8 +177,6 @@ package() {
     "${pkgdir}/lib/systemd/system/${pkgname}.service"
   install -Dm644 ${pkgname}-sidecar.service \
     "${pkgdir}/lib/systemd/system/${pkgname}-sidecar.service"
-  install -Dm644 ${pkgname}-setup.sh \
-    "${pkgdir}/etc/zextras/pending-setups.d/${pkgname}.sh"
   install -Dm755 ${pkgname} \
     "${pkgdir}/usr/bin/${pkgname}"
   install -Dm755 ${pkgname}-set-user \
