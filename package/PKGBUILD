@@ -1,5 +1,5 @@
 pkgname="carbonio-message-broker"
-pkgver="0.2.2" # renovate: datasource=github-releases depName=rabbitmq/rabbitmq-server
+pkgver="0.2.2"
 pkgrel="1"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
