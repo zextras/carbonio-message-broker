@@ -1,0 +1,33 @@
+## [](https://github.com/zextras/carbonio-message-broker/compare/v0.2.3...v) (2026-01-08)
+## [0.2.3](https://github.com/zextras/carbonio-message-broker/compare/0.1.4...v0.2.3) (2025-11-17)
+
+### Features
+
+* add intention in message broker to allow mailbox ([#20](https://github.com/zextras/carbonio-message-broker/issues/20)) ([fa13014](https://github.com/zextras/carbonio-message-broker/commit/fa13014f812918fa827701bfccafe2ff5d810842))
+* add ubuntu 24.04 (ubuntu-noble) support ([#22](https://github.com/zextras/carbonio-message-broker/issues/22)) ([095595c](https://github.com/zextras/carbonio-message-broker/commit/095595cb0ad46d1afb64996e6df793106f841e09))
+* create Dockerfile with configs ([#28](https://github.com/zextras/carbonio-message-broker/issues/28)) ([1634fcb](https://github.com/zextras/carbonio-message-broker/commit/1634fcbfe4c91c2e49506dd204d33d6ec8cb4f4f))
+* enable rabbitmq prometheus plugin ([#25](https://github.com/zextras/carbonio-message-broker/issues/25)) ([5c2080d](https://github.com/zextras/carbonio-message-broker/commit/5c2080df2f66fa81243229bf9fec135d500bb3ce))
+
+### Bug Fixes
+
+* revert WantedBy for compatibility with older systems ([#31](https://github.com/zextras/carbonio-message-broker/issues/31)) ([aad1109](https://github.com/zextras/carbonio-message-broker/commit/aad1109d9e9598a1f5a072d1b8b2fbd32fc08368))
+## [0.1.4](https://github.com/zextras/carbonio-message-broker/compare/0.1.3...0.1.4) (2024-06-21)
+## [0.1.3](https://github.com/zextras/carbonio-message-broker/compare/0.1.2...0.1.3) (2024-01-10)
+
+### Bug Fixes
+
+* ci: typo on promotion target repo ([2aafd98](https://github.com/zextras/carbonio-message-broker/commit/2aafd9887763887a1bba688669d68187a29490b5))
+* missing binaries for systemd unit file ([#14](https://github.com/zextras/carbonio-message-broker/issues/14)) ([f25e9f2](https://github.com/zextras/carbonio-message-broker/commit/f25e9f20914295d0ffd39193b942fa206ae95b8a))
+## [0.1.2](https://github.com/zextras/carbonio-message-broker/compare/1d109de4a3e3e92abb3dfb9aba8d7982b6753c02...0.1.2) (2023-11-24)
+
+### Features
+
+* enable rhel packaging ([8aeb924](https://github.com/zextras/carbonio-message-broker/commit/8aeb92467eb70da967a6f1ebc4f6c0d1f4598dfc))
+* move to yap agent and add rhel9 support ([#12](https://github.com/zextras/carbonio-message-broker/issues/12)) ([96963a8](https://github.com/zextras/carbonio-message-broker/commit/96963a859d26b493290d5fb037a603114b216367))
+* WSC-1003 update pre-commit-config yaml ([#10](https://github.com/zextras/carbonio-message-broker/issues/10)) ([47b9c5d](https://github.com/zextras/carbonio-message-broker/commit/47b9c5d22e1c029206a1f90e0f17eb7736d9fa66))
+
+### Bug Fixes
+
+* JenkinsFile upload rc stage ([#9](https://github.com/zextras/carbonio-message-broker/issues/9)) ([8730826](https://github.com/zextras/carbonio-message-broker/commit/8730826a17a97a4d7d0b212976c6bbe929d03b7d))
+* RabbitMq Consul configurations ([1d109de](https://github.com/zextras/carbonio-message-broker/commit/1d109de4a3e3e92abb3dfb9aba8d7982b6753c02))
+* ws-collaboration intention ([#8](https://github.com/zextras/carbonio-message-broker/issues/8)) ([8972d1a](https://github.com/zextras/carbonio-message-broker/commit/8972d1a8b98cf1ecc122e9dba3ebfe9e82a5961f))
