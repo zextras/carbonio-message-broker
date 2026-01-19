@@ -123,17 +123,12 @@ pipeline {
         }
 
         stage('Upload artifacts') {
-            when {
-                expression { return uploadStage.shouldUpload() }
-            }
             tools {
                 jfrog 'jfrog-cli'
             }
             steps {
                 uploadStage(
-                    packages: yapHelper.resolvePackageNames(),
-                    rockySinglePkg: true,
-                    ubuntuSinglePkg: true
+                    packages: yapHelper.resolvePackageNames()
                 )
             }
         }
