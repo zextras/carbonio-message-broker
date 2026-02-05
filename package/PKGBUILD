@@ -52,9 +52,11 @@ source=(
   "${pkgname}-set-admin"
   "${pkgname}-set-user"
   "${pkgname}-sidecar.service"
+  "${pkgname}-sidecar-legacy.service"
   "${pkgname}.hcl"
   "${pkgname}.logrotate"
   "${pkgname}.service"
+  "${pkgname}-legacy.service"
   "${pkgname}.sysusers"
   "${pkgname}.tmpfiles"
   "default_schema.json"
@@ -79,10 +81,12 @@ sha256sums=(
   'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
   'f28714c65965eccc9417ef6ca8c75d253fd3d55b2160ffb7fbea2c30bb5f1ec0'
   'b2fcb84d5a226c5942d7bd25689236492e817f2bc8f49e53d5fc7e2d7dc0a0ed'
-  '019fd5bf5bd2e89b3ba4b5ca4c74b2dfbada24020db8d7dff51fd64f818e64db'
+  '7296c180b1cc9235d18a64d8b1aabe7c6391c8e6107f4db091e8524643540108'
+  'b3666a9c49dd6cc822286ef28572214c05c9038b7b7e7803ca2c3bee6896ea26'
   '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
   '98f8984a2bbdc98718c0997fbeb891a96caf69363da550d8302aad9615b03b0f'
-  '6814bf9ac1d199d7297e09c6b08e9a4616a04947f2ca34e35675eae758e180b8'
+  '8078e2d8c888e740456d08398d87bb469c89a51d158a7914a2541ff0adbd814e'
+  'eb5dd87741f56b75ab71fd8fad7ceaadb2dbaa17a258873d2ba6ecf721c1647c'
   '4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0'
   '747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0'
   '55b364de83c3271c25f8c47ec4eb79211261d5bf658309c69ea9b26647e5015e'
@@ -95,20 +99,7 @@ sha256sums=(
   'b7c8554cbc8d77e1bde1d02ed54e58b4ba8c2bb385861ce2faa34f93a50d4ed6'
 )
 
-build() {
-  export PATH="/opt/zextras/common/bin/:$PATH"
-  export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
-  export CFLAGS="-I/opt/zextras/common/include"
-
-  cd "${srcdir}"/rabbitmq-server-3.13.6
-  patch -Np1 -i ../carbonio-customizations.patch
-
-  make \
-    PREFIX=/opt/zextras/common \
-    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
-}
-
-package() {
+_package() {
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
@@ -173,10 +164,6 @@ package() {
     "${pkgdir}/etc/zextras/service-discover/${pkgname}.hcl"
   install -Dm644 carbonio-prometheus-rabbit-exporter.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-prometheus-rabbit-exporter.hcl"
-  install -Dm644 ${pkgname}.service \
-    "${pkgdir}/lib/systemd/system/${pkgname}.service"
-  install -Dm644 ${pkgname}-sidecar.service \
-    "${pkgdir}/lib/systemd/system/${pkgname}-sidecar.service"
   install -Dm755 ${pkgname} \
     "${pkgdir}/usr/bin/${pkgname}"
   install -Dm755 ${pkgname}-set-user \
@@ -186,6 +173,58 @@ package() {
 
   # Create log folder for carbonio-message-broker
   install -d "${pkgdir}/var/log/carbonio/message-broker"
+}
+
+_package_legacy() {
+  install -Dm644 "${srcdir}/${pkgname}-legacy.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.service"
+  install -Dm644 "${srcdir}/${pkgname}-sidecar-legacy.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}-sidecar.service"
+}
+
+_package_systemd() {
+  install -Dm644 "${srcdir}/${pkgname}.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.service"
+  install -Dm644 "${srcdir}/${pkgname}-sidecar.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}-sidecar.service"
+}
+
+build() {
+  export PATH="/opt/zextras/common/bin/:$PATH"
+  export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
+  export CFLAGS="-I/opt/zextras/common/include"
+
+  cd "${srcdir}"/rabbitmq-server-3.13.6
+  patch -Np1 -i ../carbonio-customizations.patch
+
+  make \
+    PREFIX=/opt/zextras/common \
+    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
+}
+
+package() {
+  _package
+  _package_systemd
+}
+
+package__rocky_8() {
+  _package
+  _package_legacy
+}
+
+package__rocky_9() {
+  _package
+  _package_systemd
+}
+
+package__ubuntu_jammy() {
+  _package
+  _package_legacy
+}
+
+package__ubuntu_noble() {
+  _package
+  _package_systemd
 }
 
 postinst() {

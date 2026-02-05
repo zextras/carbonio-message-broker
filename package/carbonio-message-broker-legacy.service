@@ -3,7 +3,6 @@ Description=Carbonio Message Broker Daemon
 Requires=network-online.target
 After=network.target epmd@0.0.0.0.socket
 Wants=network.target epmd@0.0.0.0.socket
-PartOf=carbonio-directory-server.target
 
 [Service]
 Type=notify
@@ -23,4 +22,4 @@ Environment=PATH="/opt/zextras/common/bin:/opt/zextras/common/lib/erlang/bin:/us
 Environment=RABBITMQ_CONF_ENV_FILE="/etc/carbonio/message-broker/rabbitmq-env.conf"
 
 [Install]
-WantedBy=carbonio-directory-server.target
+WantedBy=multi-user.target

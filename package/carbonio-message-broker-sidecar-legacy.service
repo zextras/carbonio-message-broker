@@ -3,7 +3,6 @@ Description=Carbonio Message Broker Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target
-PartOf=carbonio-directory-server.target
 
 [Service]
 User=carbonio-message-broker
@@ -18,4 +17,4 @@ KillSignal=SIGINT
 LimitNOFILE=65536
 
 [Install]
-WantedBy=carbonio-directory-server.target
+WantedBy=multi-user.target
