@@ -1,3 +1,9 @@
+## [0.2.4](https://github.com/zextras/carbonio-message-broker/compare/v0.2.3...v0.2.4) (2026-02-23)
+
+### Bug Fixes
+
+* Jenkins build updating upload artifacts stage ([#52](https://github.com/zextras/carbonio-message-broker/issues/52)) ([a8e071d](https://github.com/zextras/carbonio-message-broker/commit/a8e071d21c0fa888e8c1cfeb024b89cb97ea9e4f))
+
 ## [](https://github.com/zextras/carbonio-message-broker/compare/v0.2.3...v) (2026-01-08)
 ## [0.2.3](https://github.com/zextras/carbonio-message-broker/compare/0.1.4...v0.2.3) (2025-11-17)
 
