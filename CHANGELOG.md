@@ -1,3 +1,9 @@
+## [0.2.5](https://github.com/zextras/carbonio-message-broker/compare/v0.2.4...v0.2.5) (2026-03-02)
+
+### Bug Fixes
+
+* prod package name ([#58](https://github.com/zextras/carbonio-message-broker/issues/58)) ([d065ec6](https://github.com/zextras/carbonio-message-broker/commit/d065ec64b4153aba3463f3991cecf9d9ccdcabdf))
+
 ## [0.2.4](https://github.com/zextras/carbonio-message-broker/compare/v0.2.3...v0.2.4) (2026-02-23)
 
 ### Bug Fixes
