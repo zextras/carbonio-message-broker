@@ -121,3 +121,15 @@ diff '--color=auto' -Naur a/scripts/rabbitmq-server.ocf b/scripts/rabbitmq-serve
  OCF_RESKEY_limit_nofile_default=65535
  : ${OCF_RESKEY_server=${OCF_RESKEY_server_default}}
  : ${OCF_RESKEY_ctl=${OCF_RESKEY_ctl_default}}
+
+diff '--color=auto' -Naur a/deps/oauth2_client/Makefile b/deps/oauth2_client/Makefile
+--- a/deps/oauth2_client/Makefile	2022-12-02 13:53:02.384739081 +0100
++++ b/deps/oauth2_client/Makefile	2022-12-02 13:54:23.432137608 +0100
+@@ -10,5 +10,5 @@
+ DEP_EARLY_PLUGINS = rabbit_common/mk/rabbitmq-early-plugin.mk
+ DEP_PLUGINS = rabbit_common/mk/rabbitmq-plugin.mk
+
+-include rabbitmq-components.mk
+-include erlang.mk
++include ../../rabbitmq-components.mk
++include ../../erlang.mk
