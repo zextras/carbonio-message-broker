@@ -22,7 +22,13 @@ get_consul_kv() {
 TMP_PATH=$PATH
 export PATH="$PATH:$RABBITMQ_COMMANDS_FOLDER"
 
-rabbitmqctl enable_feature_flag all --node "$RABBITMQ_NODE_NAME" >/dev/null 2>&1 || true
+rabbitmqctl enable_feature_flag all --node "$RABBITMQ_NODE_NAME" >/tmp/rabbitmq_feature_flags.log 2>&1
+FF_RESULT=$?
+if [[ "$FF_RESULT" -eq 0 ]]; then
+  echo "Feature flags enabled successfully"
+else
+  echo "Feature flags already enabled"
+fi
 
 get_consul_kv "$MAIN_SERVICE_NAME/admin/username" >/dev/null 2>&1; USERNAME=$CONSUL_VALUE
 get_consul_kv "$MAIN_SERVICE_NAME/admin/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VALUE
