@@ -112,6 +112,7 @@ _package() {
     DESTDIR="${pkgdir}" \
     PREFIX=/opt/zextras/common \
     RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq \
+    RABBITMQ_VERSION=4.2.5 \
     install install-bin
 
   # using script wrapper for better bin handling
@@ -201,7 +202,8 @@ build() {
 
   make \
     PREFIX=/opt/zextras/common \
-    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq
+    RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq \
+    RABBITMQ_VERSION=4.2.5
 }
 
 package() {
