@@ -24,7 +24,7 @@ makedepends__apt=(
   "carbonio-elixir"
   "carbonio-erlang"
   "carbonio-openssl"
-  "7zip"
+  "p7zip-full"
   "python3"
   "rsync"
   "socat"
