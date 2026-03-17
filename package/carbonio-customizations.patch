@@ -77,8 +77,7 @@ diff '--color=auto' -Naur a/scripts/rabbitmq-script-wrapper b/scripts/rabbitmq-s
  }
 
  exec_script_as_root() {
-@@ -86,13 +86,13 @@
-     # removed
+@@ -87,20 +87,20 @@
      if /sbin/runuser --version | grep -qF util-linux
      then
 -        exec /sbin/runuser -u rabbitmq -- "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
@@ -94,15 +93,15 @@ diff '--color=auto' -Naur a/scripts/rabbitmq-script-wrapper b/scripts/rabbitmq-s
    else
      echo "Please ensure /bin/su or /sbin/runuser exists and can be executed by $USER." 1>&2
      exit 1
-@@ -100,7 +100,7 @@
+   fi
  }
 
  run_script_help_and_fail() {
 -  "/usr/lib/rabbitmq/bin/$SCRIPT" help
 +  "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" help
 
-   echo "
- Only root or rabbitmq can run $SCRIPT
+   msg="Only root or rabbitmq can run $SCRIPT"
+   if calling_rabbitmq_plugins
 diff '--color=auto' -Naur a/scripts/rabbitmq-server.ocf b/scripts/rabbitmq-server.ocf
 --- a/scripts/rabbitmq-server.ocf	2022-12-02 13:53:02.450739406 +0100
 +++ b/scripts/rabbitmq-server.ocf	2022-12-02 13:54:23.432137608 +0100

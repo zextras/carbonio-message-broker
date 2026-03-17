@@ -1,8 +1,8 @@
 {
-  "rabbit_version": "3.13.6",
-  "rabbitmq_version": "3.13.6",
+  "rabbit_version": "4.2.5",
+  "rabbitmq_version": "4.2.5",
   "product_name": "RabbitMQ",
-  "product_version": "3.13.6",
+  "product_version": "4.2.5",
   "vhosts": [
     {
       "name": "/"

@@ -45,7 +45,7 @@ makedepends__yum=(
   "socat"
 )
 source=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.6/rabbitmq-server-3.13.6.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v4.2.5/rabbitmq-server-4.2.5.tar.xz"
   "141-${pkgname}-setup.sh"
   "carbonio-customizations.patch"
   "${pkgname}"
@@ -75,9 +75,9 @@ backup=(
   "etc/zextras/service-discover/${pkgname}.hcl"
 )
 sha256sums=(
-  'cbaac76690215d5b8eeac9f5f1946f6c6f2a6a34c255d13b896927f8a5d48702'
+  '708fe298b5f8a5d6539751c329a1365b038e696a700bbf0acaa5879b1b05423d'
   'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
-  '9712892090a9608d3ac85d7058d43be06abd082d2a13084247b109aa20871122'
+  '6183a1817562308471d263ac0c7fb89d1cad84e399884cf4f534364b6afb641b'
   'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
   'f28714c65965eccc9417ef6ca8c75d253fd3d55b2160ffb7fbea2c30bb5f1ec0'
   'b2fcb84d5a226c5942d7bd25689236492e817f2bc8f49e53d5fc7e2d7dc0a0ed'
@@ -104,7 +104,7 @@ _package() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.13.6
+  cd "${srcdir}"/rabbitmq-server-4.2.5
 
   make \
     DESTDIR="${pkgdir}" \
@@ -194,7 +194,7 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-3.13.6
+  cd "${srcdir}"/rabbitmq-server-4.2.5
   patch -Np1 -i ../carbonio-customizations.patch
 
   make \
