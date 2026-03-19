@@ -81,7 +81,7 @@ sha256sums=(
   'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
   '6d562f97311390cff21a7a573ceefd13709e224d13440b8962f8af352f3d7184'
   'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
-  '15bb8745746df7f7d26dbdd4caed53ed7bc9b8c3ba79911fb99890438ecbddc7'
+  'c90c8146a0f068184ee104d3f4ce17239fe0757e91affa8d9787ee79d250d343'
   'b2fcb84d5a226c5942d7bd25689236492e817f2bc8f49e53d5fc7e2d7dc0a0ed'
   '7296c180b1cc9235d18a64d8b1aabe7c6391c8e6107f4db091e8524643540108'
   'b3666a9c49dd6cc822286ef28572214c05c9038b7b7e7803ca2c3bee6896ea26'
@@ -248,19 +248,15 @@ postinst() {
   chown -R carbonio-message-broker:carbonio-message-broker /var/lib/carbonio-message-broker
   chown -R carbonio-message-broker:carbonio-message-broker /var/log/carbonio/message-broker
 
+  if [ -z "$3" ]; then
+    export PATH="$PATH:/opt/zextras/common/bin"
+    rabbitmqctl enable_feature_flag all --node "carbonio-message-broker-clustered" >/tmp/rabbitmq_feature_flags.log 2>&1 || true
+  fi
+
   echo "======================================================"
   echo "Carbonio message broker installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
-}
-
-prerm() {
-  if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable carbonio-message-broker.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-message-broker.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
-  fi
 }
 
 postrm__apt() {
@@ -283,4 +279,20 @@ postrm__yum() {
   echo "Don't forget to backup/remove the following folder:"
   echo ""
   echo "/var/lib/carbonio-message-broker/mnesia/"
+}
+
+preinst() {
+  if [ -x /opt/zextras/common/bin/rabbitmqctl ]; then
+    export PATH="$PATH:/opt/zextras/common/bin"
+    rabbitmqctl enable_feature_flag all --node "carbonio-message-broker-clustered" >/tmp/rabbitmq_feature_flags.log 2>&1 || true
+  fi
+}
+
+prerm() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable carbonio-message-broker.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-broker.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
+  fi
 }
