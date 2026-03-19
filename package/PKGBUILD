@@ -8,6 +8,7 @@ arch=('x86_64')
 license=("MPL-2.0")
 section="utils"
 priority="optional"
+_tag=4.2.5
 depends__apt=(
   "adduser"
   "carbonio-erlang"
@@ -47,7 +48,7 @@ makedepends__yum=(
   "socat"
 )
 source=(
-  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v4.2.5/rabbitmq-server-4.2.5.tar.xz"
+  "https://github.com/rabbitmq/rabbitmq-server/releases/download/v${_tag}/rabbitmq-server-${_tag}.tar.xz"
   "141-${pkgname}-setup.sh"
   "carbonio-customizations.patch"
   "${pkgname}"
@@ -106,13 +107,13 @@ _package() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-4.2.5
+  cd "${srcdir}"/rabbitmq-server-${_tag}
 
   make \
     DESTDIR="${pkgdir}" \
     PREFIX=/opt/zextras/common \
     RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq \
-    RABBITMQ_VERSION=4.2.5 \
+    RABBITMQ_VERSION=${_tag} \
     install install-bin
 
   # using script wrapper for better bin handling
@@ -197,13 +198,13 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  cd "${srcdir}"/rabbitmq-server-4.2.5
+  cd "${srcdir}"/rabbitmq-server-${_tag}
   patch -Np1 -i ../carbonio-customizations.patch
 
   make \
     PREFIX=/opt/zextras/common \
     RMQ_ROOTDIR=/opt/zextras/common/lib/rabbitmq \
-    RABBITMQ_VERSION=4.2.5
+    RABBITMQ_VERSION=${_tag}
 }
 
 package() {
