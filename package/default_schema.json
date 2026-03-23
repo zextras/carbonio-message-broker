@@ -1,1 +1,17 @@
-{"rabbit_version":"4.2.5","rabbitmq_version":"4.2.5","product_name":"RabbitMQ","product_version":"4.2.5","vhosts":[{"name":"/"}],"topic_permissions":[],"parameters":[],"policies":[],"queues":[],"exchanges":[],"bindings":[]}
+{
+  "rabbit_version": "4.2.5",
+  "rabbitmq_version": "4.2.5",
+  "product_name": "RabbitMQ",
+  "product_version": "4.2.5",
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "topic_permissions": [],
+  "parameters": [],
+  "policies": [],
+  "queues": [],
+  "exchanges": [],
+  "bindings": []
+}
