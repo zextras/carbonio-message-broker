@@ -52,8 +52,7 @@ source=(
   "141-${pkgname}-setup.sh"
   "carbonio-customizations.patch"
   "${pkgname}"
-  "${pkgname}-set-admin"
-  "${pkgname}-set-user"
+  "${pkgname}-setup-users"
   "${pkgname}-sidecar.service"
   "${pkgname}-sidecar-legacy.service"
   "${pkgname}.hcl"
@@ -81,9 +80,8 @@ sha256sums=(
   '708fe298b5f8a5d6539751c329a1365b038e696a700bbf0acaa5879b1b05423d'
   'ba28e32af8b7f7434ca4cad4e06b59a29eda590a2295081753bb1eaaadb0cfa6'
   '6d562f97311390cff21a7a573ceefd13709e224d13440b8962f8af352f3d7184'
-  'b2d7fdb371140f5a73321c55b91103a0efad24ee7fbbeba7ec6417d160b6805b'
-  '376249c277d5a65e2523311d319387c8f6a41fe566a3a5e2218a3b66214e97cc'
-  '8ca0bc80a058b3841ed8bd5fd57a965ff845db7269e1bd46e8fa64aebc571bcb'
+  '44d353f4b2bde3ed206f773df61c99bc593e54e4fb06e78c3dada422b3689e23'
+  '111ebc058c153465f4c60c0833c9e8faf1c4cb02b4dc988a2b5a6c6138fe1927'
   '7296c180b1cc9235d18a64d8b1aabe7c6391c8e6107f4db091e8524643540108'
   'b3666a9c49dd6cc822286ef28572214c05c9038b7b7e7803ca2c3bee6896ea26'
   '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
@@ -170,10 +168,8 @@ _package() {
     "${pkgdir}/etc/zextras/service-discover/carbonio-prometheus-rabbit-exporter.hcl"
   install -Dm755 ${pkgname} \
     "${pkgdir}/usr/bin/${pkgname}"
-  install -Dm755 ${pkgname}-set-user \
-    "${pkgdir}/usr/bin/${pkgname}-set-user"
-  install -Dm755 ${pkgname}-set-admin \
-    "${pkgdir}/usr/bin/${pkgname}-set-admin"
+  install -Dm755 ${pkgname}-setup-users \
+    "${pkgdir}/usr/bin/${pkgname}-setup-users"
 
   # Create log folder for carbonio-message-broker
   install -d "${pkgdir}/var/log/carbonio/message-broker"
@@ -248,11 +244,6 @@ postinst() {
   chown -R carbonio-message-broker:carbonio-message-broker /var/lib/carbonio-message-broker
   chown -R carbonio-message-broker:carbonio-message-broker /var/lib/carbonio-message-broker
   chown -R carbonio-message-broker:carbonio-message-broker /var/log/carbonio/message-broker
-
-  if [ -z "$3" ]; then
-    export PATH="$PATH:/opt/zextras/common/bin"
-    rabbitmqctl enable_feature_flag all --node "carbonio-message-broker-clustered" >/tmp/rabbitmq_feature_flags.log 2>&1 || true
-  fi
 
   echo "======================================================"
   echo "Carbonio message broker installed successfully!"

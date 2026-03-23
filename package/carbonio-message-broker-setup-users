@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+MAIN_SERVICE_NAME="carbonio-message-broker"
+CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
+RABBITMQ_COMMANDS_FOLDER="/opt/zextras/common/bin"
+RABBITMQ_NODE_NAME="carbonio-message-broker-clustered"
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+TMP_PATH=$PATH
+export PATH="$PATH:$RABBITMQ_COMMANDS_FOLDER"
+
+get_consul_kv() {
+  KEY=$1
+  CONSUL_VALUE=$(consul kv get -token-file="$CONSUL_TOKEN_PATH" "$KEY")
+}
+
+setup_user() {
+  local CONSUL_PREFIX=$1
+  local USERNAME_DEFAULT=$2
+  local TAGS=$3
+
+  get_consul_kv "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/username" >/dev/null 2>&1; USERNAME=$CONSUL_VALUE
+  get_consul_kv "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/password" >/dev/null 2>&1; PASSWORD=$CONSUL_VALUE
+
+  RESULT=999
+  if [[ "$USERNAME" != "" && "$PASSWORD" != "" ]]; then
+    rabbitmqctl authenticate_user --node "$RABBITMQ_NODE_NAME" "$USERNAME" "$PASSWORD" >/dev/null 2>&1
+    RESULT=$?
+  fi
+
+  if [[ "$RESULT" != "0" ]]; then
+    if [[ "$USERNAME" != "$USERNAME_DEFAULT" ]]; then
+      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/username" "$USERNAME_DEFAULT"
+    fi
+    rabbitmqctl add_user --node "$RABBITMQ_NODE_NAME" "$USERNAME_DEFAULT" "$PASSWORD" >/dev/null 2>&1
+    EXIT_CODE=$?
+    if [[ "$EXIT_CODE" != "0" ]]; then
+      PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
+      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/password" "$PASSWORD"
+      rabbitmqctl change_password --node "$RABBITMQ_NODE_NAME" "$USERNAME_DEFAULT" "$PASSWORD" >/dev/null 2>&1
+      echo "Changed password for the user $USERNAME_DEFAULT"
+    else
+      rabbitmqctl set_permissions --node "$RABBITMQ_NODE_NAME" -p "/" "$USERNAME_DEFAULT" ".*" ".*" ".*" >/dev/null 2>&1
+      echo "User $USERNAME_DEFAULT added"
+    fi
+  else
+    echo "User $USERNAME_DEFAULT already exists"
+  fi
+
+  if [[ -n "$TAGS" ]]; then
+    rabbitmqctl set_user_tags --node "$RABBITMQ_NODE_NAME" "$USERNAME_DEFAULT" "$TAGS" >/dev/null 2>&1
+  fi
+}
+
+setup_user "default" "$MAIN_SERVICE_NAME" ""
+setup_user "admin" "$MAIN_SERVICE_NAME-admin" "administrator"
+
+echo "Enabling feature flags..."
+rabbitmqctl enable_feature_flag all --node "$RABBITMQ_NODE_NAME" >/tmp/rabbitmq_feature_flags.log 2>&1 || true
+
+export PATH=$TMP_PATH
