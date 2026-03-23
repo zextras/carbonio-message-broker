@@ -1,36 +1,49 @@
-diff '--color=auto' -Naur a/deps/amqp10_common/codegen.py b/deps/amqp10_common/codegen.py
---- a/deps/amqp10_common/codegen.py	2022-12-02 13:53:02.384739081 +0100
-+++ b/deps/amqp10_common/codegen.py	2022-12-02 13:54:23.432137608 +0100
+diff -Naur rabbitmq-server-4.2.5.orig/deps/amqp10_common/codegen.py rabbitmq-server-4.2.5/deps/amqp10_common/codegen.py
+--- rabbitmq-server-4.2.5.orig/deps/amqp10_common/codegen.py	2026-03-17 01:08:51
++++ rabbitmq-server-4.2.5/deps/amqp10_common/codegen.py	2026-03-23 14:22:21
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env python
 +#!/usr/bin/env python3
 
  from __future__ import print_function
 
-diff '--color=auto' -Naur a/deps/rabbit_common/codegen.py b/deps/rabbit_common/codegen.py
---- a/deps/rabbit_common/codegen.py	2022-12-02 13:53:02.412739219 +0100
-+++ b/deps/rabbit_common/codegen.py	2022-12-02 13:54:23.432137608 +0100
+diff -Naur rabbitmq-server-4.2.5.orig/deps/oauth2_client/Makefile rabbitmq-server-4.2.5/deps/oauth2_client/Makefile
+--- rabbitmq-server-4.2.5.orig/deps/oauth2_client/Makefile	2026-03-17 01:08:51
++++ rabbitmq-server-4.2.5/deps/oauth2_client/Makefile	2026-03-23 14:22:32
+@@ -11,5 +11,5 @@
+ DEP_EARLY_PLUGINS = rabbit_common/mk/rabbitmq-early-plugin.mk
+ DEP_PLUGINS = rabbit_common/mk/rabbitmq-plugin.mk
+
+-include rabbitmq-components.mk
+-include erlang.mk
++include ../../rabbitmq-components.mk
++include ../../erlang.mk
+diff -Naur rabbitmq-server-4.2.5.orig/deps/rabbit_common/codegen.py rabbitmq-server-4.2.5/deps/rabbit_common/codegen.py
+--- rabbitmq-server-4.2.5.orig/deps/rabbit_common/codegen.py	2026-03-17 01:08:51
++++ rabbitmq-server-4.2.5/deps/rabbit_common/codegen.py	2026-03-23 14:22:21
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env python
 +#!/usr/bin/env python3
 
  ##  This Source Code Form is subject to the terms of the Mozilla Public
  ##  License, v. 2.0. If a copy of the MPL was not distributed with this
-diff '--color=auto' -Naur a/deps/rabbit_common/src/rabbit_env.erl b/deps/rabbit_common/src/rabbit_env.erl
---- a/deps/rabbit_common/src/rabbit_env.erl	2022-12-02 13:53:02.413739224 +0100
-+++ b/deps/rabbit_common/src/rabbit_env.erl	2022-12-02 13:53:28.634868430 +0100
-@@ -1088,7 +1088,7 @@
+diff -Naur rabbitmq-server-4.2.5.orig/deps/rabbit_common/src/rabbit_env.erl rabbitmq-server-4.2.5/deps/rabbit_common/src/rabbit_env.erl
+--- rabbitmq-server-4.2.5.orig/deps/rabbit_common/src/rabbit_env.erl	2026-03-17 01:08:51
++++ rabbitmq-server-4.2.5/deps/rabbit_common/src/rabbit_env.erl	2026-03-23 14:22:52
+@@ -1077,8 +1077,8 @@
      ThisModDir = this_module_dir(),
      PluginsDir = rabbit_common_mod_location_to_plugins_dir(ThisModDir),
      case {OSType, PluginsDir} of
 -        {{unix, _}, "/usr/lib/rabbitmq/" ++ _} ->
+-            UserPluginsDir = normalize_path("/", "usr", "lib", "rabbitmq", "plugins"),
 +        {{unix, _}, "/opt/zextras/common/lib/rabbitmq/" ++ _} ->
-             UserPluginsDir = normalize_path("/", "usr", "lib", "rabbitmq", "plugins"),
++            UserPluginsDir = normalize_path("/opt/zextras", "common", "lib", "rabbitmq", "plugins"),
              UserPluginsDir ++ ":" ++ PluginsDir;
          _ ->
-diff '--color=auto' -Naur a/scripts/rabbitmq-script-wrapper b/scripts/rabbitmq-script-wrapper
---- a/scripts/rabbitmq-script-wrapper	2022-12-02 13:53:02.450739406 +0100
-+++ b/scripts/rabbitmq-script-wrapper	2022-12-02 13:54:23.432137608 +0100
+             PluginsDir
+diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-script-wrapper rabbitmq-server-4.2.5/scripts/rabbitmq-script-wrapper
+--- rabbitmq-server-4.2.5.orig/scripts/rabbitmq-script-wrapper	2026-03-17 01:08:51
++++ rabbitmq-server-4.2.5/scripts/rabbitmq-script-wrapper	2026-03-23 14:23:35
 @@ -33,22 +33,22 @@
 
  maybe_fixup_erlang_cookie() {
@@ -101,11 +114,11 @@ diff '--color=auto' -Naur a/scripts/rabbitmq-script-wrapper b/scripts/rabbitmq-s
 -  "/usr/lib/rabbitmq/bin/$SCRIPT" help
 +  "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" help
 
-   echo "
- Only root or rabbitmq can run $SCRIPT
-diff '--color=auto' -Naur a/scripts/rabbitmq-server.ocf b/scripts/rabbitmq-server.ocf
---- a/scripts/rabbitmq-server.ocf	2022-12-02 13:53:02.450739406 +0100
-+++ b/scripts/rabbitmq-server.ocf	2022-12-02 13:54:23.432137608 +0100
+   msg="Only root or rabbitmq can run $SCRIPT"
+   if calling_rabbitmq_plugins
+diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-server.ocf rabbitmq-server-4.2.5/scripts/rabbitmq-server.ocf
+--- rabbitmq-server-4.2.5.orig/scripts/rabbitmq-server.ocf	2026-03-17 01:08:51
++++ rabbitmq-server-4.2.5/scripts/rabbitmq-server.ocf	2026-03-23 14:23:16
 @@ -32,11 +32,11 @@
 
  #######################################################################
