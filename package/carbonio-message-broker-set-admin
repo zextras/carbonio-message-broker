@@ -35,11 +35,11 @@ if [[ "$RESULT" != "0" ]]; then
   if [[ "$USERNAME" != "$MAIN_SERVICE_NAME-admin" ]]; then
     consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/admin/username" "$MAIN_SERVICE_NAME-admin"
   fi
-  PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
-  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/admin/password" "$PASSWORD"
   rabbitmqctl add_user --node "$RABBITMQ_NODE_NAME" "$MAIN_SERVICE_NAME-admin" "$PASSWORD" >/dev/null 2>&1
   EXIT_CODE=$?
   if [[ "$EXIT_CODE" != "0" ]]; then
+    PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
+    consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/admin/password" "$PASSWORD"
     rabbitmqctl change_password --node "$RABBITMQ_NODE_NAME" "$MAIN_SERVICE_NAME-admin" "$PASSWORD" >/dev/null 2>&1
     echo "Changed password for the user $MAIN_SERVICE_NAME-admin"
   else
