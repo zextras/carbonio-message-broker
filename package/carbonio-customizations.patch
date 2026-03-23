@@ -36,7 +36,8 @@ diff -Naur rabbitmq-server-4.2.5.orig/deps/rabbit_common/src/rabbit_env.erl rabb
      case {OSType, PluginsDir} of
 -        {{unix, _}, "/usr/lib/rabbitmq/" ++ _} ->
 +        {{unix, _}, "/opt/zextras/common/lib/rabbitmq/" ++ _} ->
-             UserPluginsDir = normalize_path("/", "usr", "lib", "rabbitmq", "plugins"),
+-            UserPluginsDir = normalize_path("/", "usr", "lib", "rabbitmq", "plugins"),
++            UserPluginsDir = normalize_path("/", "opt", "zextras", "common", "lib", "rabbitmq", "plugins"),
              UserPluginsDir ++ ":" ++ PluginsDir;
          _ ->
 diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-script-wrapper rabbitmq-server-4.2.5/scripts/rabbitmq-script-wrapper
@@ -101,7 +102,7 @@ diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-script-wrapper rabbitmq-s
    elif [ -x /bin/su ]
    then
 -    exec /bin/su -s /bin/sh rabbitmq -- "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
-+    exec /bin/su -s /bin/sh carbonio-message-broker -- "/usr/lib/rabbitmq/bin/$SCRIPT" "$@"
++    exec /bin/su -s /bin/sh carbonio-message-broker -- "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" "$@"
    else
      echo "Please ensure /bin/su or /sbin/runuser exists and can be executed by $USER." 1>&2
      exit 1
@@ -112,7 +113,7 @@ diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-script-wrapper rabbitmq-s
 -  "/usr/lib/rabbitmq/bin/$SCRIPT" help
 +  "/opt/zextras/common/lib/rabbitmq/bin/$SCRIPT" help
 
-   msg="Only root or rabbitmq can run $SCRIPT"
+   msg="Only root or carbonio-message-broker can run $SCRIPT"
    if calling_rabbitmq_plugins
 diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-server.ocf rabbitmq-server-4.2.5/scripts/rabbitmq-server.ocf
 --- rabbitmq-server-4.2.5.orig/scripts/rabbitmq-server.ocf	2026-03-19 12:55:31
