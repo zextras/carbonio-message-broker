@@ -37,7 +37,7 @@ diff -Naur rabbitmq-server-4.2.5.orig/deps/rabbit_common/src/rabbit_env.erl rabb
 -        {{unix, _}, "/usr/lib/rabbitmq/" ++ _} ->
 +        {{unix, _}, "/opt/zextras/common/lib/rabbitmq/" ++ _} ->
 -            UserPluginsDir = normalize_path("/", "usr", "lib", "rabbitmq", "plugins"),
-+            UserPluginsDir = normalize_path("/", "opt", "zextras", "common", "lib", "rabbitmq", "plugins"),
++            UserPluginsDir = normalize_path("/opt/zextras", "common", "lib", "rabbitmq", "plugins"),
              UserPluginsDir ++ ":" ++ PluginsDir;
          _ ->
 diff -Naur rabbitmq-server-4.2.5.orig/scripts/rabbitmq-script-wrapper rabbitmq-server-4.2.5/scripts/rabbitmq-script-wrapper
