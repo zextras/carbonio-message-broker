@@ -23,8 +23,6 @@ depends__apt=(
 )
 makedepends__apt=(
   "carbonio-elixir"
-  "carbonio-erlang"
-  "carbonio-openssl"
   "p7zip-full"
   "python3"
   "rsync"
@@ -40,8 +38,6 @@ depends__yum=(
 )
 makedepends__yum=(
   "carbonio-elixir"
-  "carbonio-erlang"
-  "carbonio-openssl"
   "p7zip-plugins"
   "python3"
   "rsync"
@@ -116,7 +112,7 @@ _package() {
 
   # using script wrapper for better bin handling
   install -d "${pkgdir}/opt/zextras/common/bin"
-  install -Dm 755 scripts/rabbitmq-script-wrapper \
+  install -Dm755 scripts/rabbitmq-script-wrapper \
     -t "${pkgdir}/opt/zextras/common/lib/rabbitmq/bin"
 
   ln -s /opt/zextras/common/lib/rabbitmq/bin/rabbitmq-script-wrapper \
