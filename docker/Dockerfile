@@ -7,6 +7,10 @@ COPY docker/conf/default_schema.json /etc/rabbitmq/default_schema.json
 COPY --from=docker.io/hashicorp/consul:1.21 /bin/consul /usr/local/bin/consul
 
 COPY package/carbonio-message-broker-setup-users /usr/local/bin/carbonio-message-broker-setup-users
-RUN chmod +x /usr/local/bin/carbonio-message-broker-setup-users
+COPY docker/entrypoint.sh /usr/local/bin/carbonio-message-broker-entrypoint
+RUN chmod +x /usr/local/bin/carbonio-message-broker-setup-users \
+             /usr/local/bin/carbonio-message-broker-entrypoint
 
 EXPOSE 10000 10001
+
+ENTRYPOINT ["carbonio-message-broker-entrypoint"]
