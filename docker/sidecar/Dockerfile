@@ -9,9 +9,9 @@ COPY package/intentions.json       /etc/carbonio/message-broker/service-discover
 COPY package/policies.json         /etc/carbonio/message-broker/service-discover/
 
 # Setup script
-COPY docker/sidecar/carbonio-message-broker-setup /usr/local/bin/carbonio-message-broker-setup
-RUN chmod +x /usr/local/bin/carbonio-message-broker-setup
+COPY package/carbonio-message-broker /usr/local/bin/carbonio-message-broker
+RUN chmod +x /usr/local/bin/carbonio-message-broker
 
 ENV SERVICE_NAME=carbonio-message-broker
-ENV SETUP_SCRIPT="carbonio-message-broker-setup"
+ENV SETUP_SCRIPT="carbonio-message-broker setup"
 ENV TOKEN_FILE=/etc/carbonio/message-broker/service-discover/token
