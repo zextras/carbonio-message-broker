@@ -11,6 +11,7 @@ COPY docker/entrypoint.sh /usr/local/bin/carbonio-message-broker-entrypoint
 RUN chmod +x /usr/local/bin/carbonio-message-broker-setup-users \
              /usr/local/bin/carbonio-message-broker-entrypoint
 
+ENV CONSUL_SETUP=false
 EXPOSE 10000 10001
 
 ENTRYPOINT ["carbonio-message-broker-entrypoint"]
