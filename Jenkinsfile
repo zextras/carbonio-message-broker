@@ -57,6 +57,23 @@ pipeline {
             }
         }
 
+        stage('Build and Publish Docker Images') {
+            steps {
+                buildAndPublishDockerImage(
+                        projectName: 'carbonio-message-broker',
+                        dockerfile: 'docker/Dockerfile',
+                        imageTitle: 'Carbonio Message Broker',
+                        imageDescription: 'Carbonio Message Broker Service'
+                )
+                buildAndPublishDockerImage(
+                        projectName: 'carbonio-message-broker-sidecar',
+                        dockerfile: 'docker/sidecar/Dockerfile',
+                        imageTitle: 'Carbonio Message Broker Sidecar',
+                        imageDescription: 'Carbonio Message Broker Sidecar Service'
+                )
+            }
+        }
+
         stage('Build deb/rpm') {
             steps {
                 script {
@@ -124,22 +141,6 @@ pipeline {
                 script {
                     tagRelease()
                 }
-            }
-        }
-
-        stage('Build and Publish Docker Image') {
-            when {
-                not {
-                    expression { env.BRANCH_NAME.startsWith('PR-') }
-                }
-            }
-            steps {
-                buildAndPublishDockerImage(
-                    projectName: 'carbonio-message-broker',
-                    dockerfile: 'docker/Dockerfile',
-                    imageTitle: 'Carbonio Message Broker',
-                    imageDescription: 'Carbonio Message Broker Service'
-                )
             }
         }
     }
