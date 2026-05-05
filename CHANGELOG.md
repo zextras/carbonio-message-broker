@@ -1,3 +1,14 @@
+## [0.3.0](https://github.com/zextras/carbonio-message-broker/compare/v0.2.5...v0.3.0) (2026-05-05)
+
+### Features
+
+* **deps:** upgrade rabbitmq version from 3.13.6 to 4.2.5 ([#62](https://github.com/zextras/carbonio-message-broker/issues/62)) ([2b6c0bf](https://github.com/zextras/carbonio-message-broker/commit/2b6c0bfc5ce63469dbb2297e636438828344712f))
+* systemd hardening and service-discover.target orchestration ([#63](https://github.com/zextras/carbonio-message-broker/issues/63)) ([afb4ca4](https://github.com/zextras/carbonio-message-broker/commit/afb4ca4ff5fe096e42a86ff0131a12ecee97be65))
+
+### Bug Fixes
+
+* generate and store password in Consul before adding RabbitMQ user ([#65](https://github.com/zextras/carbonio-message-broker/issues/65)) ([f26f2d7](https://github.com/zextras/carbonio-message-broker/commit/f26f2d76ab920726fbb5192a3fe3b0be183c1d47))
+
 ## [0.2.5](https://github.com/zextras/carbonio-message-broker/compare/v0.2.4...v0.2.5) (2026-03-02)
 
 ### Bug Fixes
