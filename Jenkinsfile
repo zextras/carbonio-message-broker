@@ -79,11 +79,13 @@ pipeline {
                 script {
                     env.REPO_ENV = env.GIT_TAG ? 'rc' : 'devel'
                 }
-                buildStage(
-                    addCarbonioRepos: true,
-                    carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
-                    prepare: true,
-                )
+                buildPackages([
+                    buildStageConfig: [
+                        addCarbonioRepos: true,
+                        carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
+                        prepare: true,
+                    ]
+                ])
             }
         }
 
