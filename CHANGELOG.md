@@ -1,3 +1,9 @@
+## [0.3.1](https://github.com/zextras/carbonio-message-broker/compare/v0.3.0...v0.3.1) (2026-05-06)
+
+### Bug Fixes
+
+* restore buildPackages() to fix pkgrel on tag builds ([#73](https://github.com/zextras/carbonio-message-broker/issues/73)) ([7eb0ed9](https://github.com/zextras/carbonio-message-broker/commit/7eb0ed97788f99d473e8a8924a726e65ecb1eb52))
+
 ## [0.3.0](https://github.com/zextras/carbonio-message-broker/compare/v0.2.5...v0.3.0) (2026-05-05)
 
 ### Features
