@@ -3,16 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-dt3-lib@v1.2.0',
-    retriever: modernSCM([
-        $class: 'GitSCMSource',
-        remote: 'git@github.com:zextras/jenkins-dt3-lib.git',
-        credentialsId: 'jenkins-integration-with-github-account'
-    ])
-)
-
-library(
-    identifier: 'jenkins-lib-common@v2.10.0',
+    identifier: 'jenkins-lib-common@dt3-pipeline',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -20,124 +11,31 @@ library(
     ])
 )
 
-properties(defaultPipelineProperties())
-
-pipeline {
-    agent {
-        node {
-            label 'zextras-v1'
-        }
-    }
-
-    environment {
-        LC_ALL = 'C.UTF-8'
-    }
-
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '25'))
-        skipDefaultCheckout()
-        timeout(time: 30, unit: 'MINUTES')
-    }
-
-    parameters {
-        booleanParam(
-            name: 'PREPARE_RELEASE',
-            defaultValue: false,
-            description: 'Check this to prepare a new release (creates pre-release branch and PR)'
-        )
-    }
-
-    stages {
-        stage('Setup') {
-            steps {
-                checkout scm
-                script {
-                    gitMetadata()
-                }
-            }
-        }
-
-        stage('Build and Publish Docker Images') {
-            steps {
-                buildAndPublishDockerImage(
-                        projectName: 'carbonio-message-broker',
-                        dockerfile: 'docker/Dockerfile',
-                        imageTitle: 'Carbonio Message Broker',
-                        imageDescription: 'Carbonio Message Broker Service'
-                )
-                buildAndPublishDockerImage(
-                        projectName: 'carbonio-message-broker-sidecar',
-                        dockerfile: 'docker/sidecar/Dockerfile',
-                        imageTitle: 'Carbonio Message Broker Sidecar',
-                        imageDescription: 'Carbonio Message Broker Sidecar Service'
-                )
-            }
-        }
-
-        stage('Build deb/rpm') {
-            steps {
-                buildPackages([
-                    buildStageConfig: [
-                        prepare: true,
-                        addCarbonioRepos: true,
-                    ]
-                ])
-            }
-        }
-
-        stage('Upload artifacts') {
-            tools {
-                jfrog 'jfrog-cli'
-            }
-            steps {
-                uploadStage()
-            }
-        }
-
-        stage('Prepare Release') {
-            agent {
-                node {
-                    label 'nodejs-v1'
-                }
-            }
-            when {
-                allOf {
-                    branch 'devel'
-                    expression { params.PREPARE_RELEASE == true }
-                    not {
-                        expression {
-                            return env.GIT_COMMIT_MSG.contains('[skip ci]') ||
-                                   env.GIT_COMMIT_MSG.contains('chore(release):')
-                        }
-                    }
-                }
-            }
-            steps {
-                script {
-                    container('nodejs-20') {
-                        prepareRelease(
-                            repoName: 'carbonio-message-broker'
-                        )
-                    }
-                }
-            }
-        }
-
-        stage('Tag for release') {
-            when {
-                allOf {
-                    branch 'devel'
-                    expression {
-                        return env.GIT_COMMIT_MSG.contains('chore(release):') &&
-                               env.GIT_COMMIT_MSG.contains('[skip ci]')
-                    }
-                }
-            }
-            steps {
-                script {
-                    tagRelease()
-                }
-            }
-        }
-    }
-}
+// carbonio-message-broker builds RabbitMQ from source (Erlang/Elixir) and produces
+// deb/rpm packages + two Docker images (broker and sidecar). No Java build is needed.
+// The PKGBUILD has Zextras makedepends (carbonio-elixir, carbonio-erlang) so
+// zextrasRepoCredentialsId handles Zextras repo injection for all distros.
+// prepare: true triggers 'yap prepare' before building (matching existing behavior).
+dt3_pipeline(
+    repoName: 'carbonio-message-broker',
+    packaging: [
+        pkgbuildPath: 'package/PKGBUILD',
+        prepare: true,
+        zextrasRepoCredentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+    ],
+    docker: [
+        [
+            dockerfile: 'docker/Dockerfile',
+            imageName: 'carbonio-message-broker',
+            title: 'Carbonio Message Broker',
+            description: 'Carbonio Message Broker Service',
+        ],
+        [
+            dockerfile: 'docker/sidecar/Dockerfile',
+            imageName: 'carbonio-message-broker-sidecar',
+            title: 'Carbonio Message Broker Sidecar',
+            description: 'Carbonio Message Broker Sidecar Service',
+        ],
+    ],
+    reuse: [projectType: 'ADVANCED'],
+)
