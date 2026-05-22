@@ -19,6 +19,7 @@ depends__apt=(
   "pending-setups"
   "python3"
   "service-discover"
+  "service-discover-base"
   "socat"
 )
 makedepends__apt=(
@@ -34,6 +35,7 @@ depends__yum=(
   "pending-setups"
   "python3"
   "service-discover"
+  "service-discover-base"
   "socat"
 )
 makedepends__yum=(
