@@ -3,6 +3,7 @@
   "description": "Message broker for carbonio CE",
   "buildDir": "/tmp/",
   "output": "artifacts",
+  "skipDeps": ["pending-setups", "service-discover", "service-discover-base"],
   "projects": [
     {
       "name": "package"
