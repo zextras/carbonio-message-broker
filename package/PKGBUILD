@@ -188,6 +188,12 @@ _package_systemd() {
 }
 
 build() {
+  # rhel8 ships python3 only via the `python36` alternatives postin, which
+  # may not have run in the build chroot. The carbonio-customizations.patch
+  # rewrites codegen.py shebangs to `#!/usr/bin/env python3`, so ensure
+  # python3 resolves. No-op on distros that already provide /usr/bin/python3.
+  [ -x /usr/bin/python3 ] || ln -sf /usr/bin/python3.6 /usr/bin/python3
+
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
