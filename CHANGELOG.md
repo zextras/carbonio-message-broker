@@ -1,3 +1,9 @@
+## [0.3.2](https://github.com/zextras/carbonio-message-broker/compare/v0.3.1...v0.3.2) (2026-05-27)
+
+### Bug Fixes
+
+* **deps:** add explicit service-discover-base dependency ([#76](https://github.com/zextras/carbonio-message-broker/issues/76)) ([c69f078](https://github.com/zextras/carbonio-message-broker/commit/c69f0782376d8ce9d8798b77df35ebb03039a795))
+
 ## [0.3.1](https://github.com/zextras/carbonio-message-broker/compare/v0.3.0...v0.3.1) (2026-05-06)
 
 ### Bug Fixes
