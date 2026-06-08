@@ -14,7 +14,7 @@ library(
 // carbonio-message-broker builds RabbitMQ from source (Erlang/Elixir) and produces
 // deb/rpm packages + two Docker images (broker and sidecar). No Java build is needed.
 // The PKGBUILD has Zextras makedepends (carbonio-elixir, carbonio-erlang), so we build the
-// per-distro matrix (ubuntu/rockySinglePkg:false) — the standard path where addCarbonioRepos
+// per-distro matrix (lib default) — the standard path where addCarbonioRepos
 // wires the Carbonio --repo per distro. Generic single-pkg mode skips repo wiring, which
 // leaves those makedeps unresolvable. prepare: true triggers 'yap prepare' before building.
 dt3_pipeline(
@@ -22,8 +22,6 @@ dt3_pipeline(
     packaging: [
         prepare: true,
         addCarbonioRepos: true,
-        ubuntuSinglePkg: false,
-        rockySinglePkg: false,
     ],
     docker: [
         [
