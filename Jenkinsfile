@@ -20,7 +20,6 @@ library(
 dt3_pipeline(
     repoName: 'carbonio-message-broker',
     packaging: [
-        pkgbuildPath: 'package/PKGBUILD',
         prepare: true,
         addCarbonioRepos: true,
         ubuntuSinglePkg: false,
