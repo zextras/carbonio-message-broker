@@ -1,3 +1,9 @@
+## [0.4.0](https://github.com/zextras/carbonio-message-broker/compare/v0.3.3...v0.4.0) (2026-06-23)
+
+### Features
+
+* migrate to dt3-pipeline ([#75](https://github.com/zextras/carbonio-message-broker/issues/75)) ([be5328a](https://github.com/zextras/carbonio-message-broker/commit/be5328a52d5b6f6f1a36f3bde310025cb0b1a271))
+
 ## [0.3.2](https://github.com/zextras/carbonio-message-broker/compare/v0.3.1...v0.3.2) (2026-05-27)
 
 ### Bug Fixes
