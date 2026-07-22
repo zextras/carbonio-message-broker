@@ -40,8 +40,14 @@ setup_user() {
     if [[ "$USERNAME" != "$USERNAME_DEFAULT" ]]; then
       consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/username" "$USERNAME_DEFAULT"
     fi
-    PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
-    consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/password" "$PASSWORD"
+    # Reuse the password already on record in consul (rabbitmq's own user db may be
+    # the one out of sync, e.g. after a purge or a move to a new host) instead of
+    # minting a new one - other consumers cache this password at startup and never
+    # re-read it, so rotating it here would silently break them until restarted.
+    if [[ "$PASSWORD" == "" ]]; then
+      PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
+      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/password" "$PASSWORD"
+    fi
     rabbitmqctl add_user --node "$RABBITMQ_NODE_NAME" "$USERNAME_DEFAULT" "$PASSWORD" >/dev/null 2>&1
     EXIT_CODE=$?
     if [[ "$EXIT_CODE" != "0" ]]; then
