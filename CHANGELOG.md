@@ -1,3 +1,5 @@
+## [0.4.4](https://github.com/zextras/carbonio-message-broker/compare/v0.4.3...v0.4.4) (2026-07-31)
+
 ## [0.4.3](https://github.com/zextras/carbonio-message-broker/compare/v0.4.2...v0.4.3) (2026-07-30)
 
 ## [0.4.2](https://github.com/zextras/carbonio-message-broker/compare/v0.4.1...v0.4.2) (2026-07-22)
