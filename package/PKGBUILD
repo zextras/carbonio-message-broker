@@ -1,5 +1,5 @@
 pkgname="carbonio-message-broker"
-pkgver="0.4.5"
+pkgver="0.4.6"
 pkgrel="SNAPSHOT"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
