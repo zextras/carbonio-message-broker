@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-lib-common@v4.4.1',
+    identifier: 'jenkins-lib-common@v4.5.0',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -26,14 +26,12 @@ dt3_pipeline(
     docker: [
         [
             dockerfile: 'docker/Dockerfile',
-            platforms: ['linux/amd64', 'linux/arm64'] as Set,
             imageName: 'carbonio-message-broker',
             title: 'Carbonio Message Broker',
             description: 'Carbonio Message Broker Service',
         ],
         [
             dockerfile: 'docker/sidecar/Dockerfile',
-            platforms: ['linux/amd64', 'linux/arm64'] as Set,
             imageName: 'carbonio-message-broker-sidecar',
             title: 'Carbonio Message Broker Sidecar',
             description: 'Carbonio Message Broker Sidecar Service',
