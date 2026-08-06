@@ -1,10 +1,10 @@
 pkgname="carbonio-message-broker"
-pkgver="0.4.6"
+pkgver="0.5.1"
 pkgrel="SNAPSHOT"
 pkgdesc="Carbonio message broker"
 url="https://www.zextras.com/"
 maintainer="Zextras <packages@zextras.com>"
-arch=('x86_64')
+arch=('any')
 license=("MPL-2.0")
 section="utils"
 priority="optional"
