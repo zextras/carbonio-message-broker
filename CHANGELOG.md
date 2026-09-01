@@ -1,3 +1,9 @@
+## [0.5.12](https://github.com/zextras/carbonio-message-broker/compare/v0.5.11...v0.5.12) (2026-09-01)
+
+### Bug Fixes
+
+* **ci:** point semantic-release at main ahead of devel->main rename ([#106](https://github.com/zextras/carbonio-message-broker/issues/106)) ([52a77d1](https://github.com/zextras/carbonio-message-broker/commit/52a77d161d13f8c6d9bb7b19ada67b8df152e17a))
+
 ## [0.5.11](https://github.com/zextras/carbonio-message-broker/compare/v0.5.10...v0.5.11) (2026-08-27)
 
 ## [0.5.10](https://github.com/zextras/carbonio-message-broker/compare/v0.5.9...v0.5.10) (2026-08-26)
