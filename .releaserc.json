@@ -1,5 +1,5 @@
 {
-  "branches": ["devel"],
+  "branches": ["main"],
   "repositoryUrl": "https://github.com/zextras/carbonio-message-broker",
   "tagFormat": "v${version}",
   "plugins": [
