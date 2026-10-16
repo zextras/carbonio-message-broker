@@ -1,3 +1,9 @@
+## [0.5.20](https://github.com/zextras/carbonio-message-broker/compare/v0.5.19...v0.5.20) (2026-10-16)
+
+### Bug Fixes
+
+* **ci:** replace mapfile in checksum-verify for macOS bash 3.2 ([#114](https://github.com/zextras/carbonio-message-broker/issues/114)) ([598659f](https://github.com/zextras/carbonio-message-broker/commit/598659f1828f5a5dfbec739327d4e1e332154f4f)), closes [jenkins-lib-common#216](https://github.com/zextras/jenkins-lib-common/issues/216)
+
 ## [0.5.19](https://github.com/zextras/carbonio-message-broker/compare/v0.5.18...v0.5.19) (2026-09-16)
 
 ## [0.5.18](https://github.com/zextras/carbonio-message-broker/compare/v0.5.17...v0.5.18) (2026-09-11)
