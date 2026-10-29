@@ -1,4 +1,4 @@
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:main
 
 # Service registration
 COPY package/carbonio-message-broker.hcl /consul/config/
