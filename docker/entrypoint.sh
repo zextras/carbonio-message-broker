@@ -11,6 +11,7 @@ if [ "${CONSUL_SETUP}" != "false" ]; then
     until rabbitmqctl status >/dev/null 2>&1; do sleep 2; done
     echo "RabbitMQ is ready, running setup-users..."
     carbonio-message-broker-setup-users
+    carbonio-message-broker-cleanup
   ) &
 fi
 
