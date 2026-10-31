@@ -38,7 +38,7 @@ setup_user() {
 
   if [[ "$RESULT" != "0" ]]; then
     if [[ "$USERNAME" != "$USERNAME_DEFAULT" ]]; then
-      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/username" "$USERNAME_DEFAULT"
+      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/username" "$USERNAME_DEFAULT" || exit 1
     fi
     # Reuse the password already on record in consul (rabbitmq's own user db may be
     # the one out of sync, e.g. after a purge or a move to a new host) instead of
@@ -46,7 +46,11 @@ setup_user() {
     # re-read it, so rotating it here would silently break them until restarted.
     if [[ "$PASSWORD" == "" ]]; then
       PASSWORD=$(openssl rand -hex 16 | tr -d '\n')
-      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/password" "$PASSWORD"
+      # A failed read is indistinguishable from a missing key: only create, never overwrite.
+      if ! consul kv put -token-file="$CONSUL_TOKEN_PATH" -cas -modify-index=0 "$MAIN_SERVICE_NAME/$CONSUL_PREFIX/password" "$PASSWORD"; then
+        echo "Cannot store a new password for $USERNAME_DEFAULT in Consul KV (already set or Consul unreachable), aborting"
+        exit 1
+      fi
     fi
     rabbitmqctl add_user --node "$RABBITMQ_NODE_NAME" "$USERNAME_DEFAULT" "$PASSWORD" >/dev/null 2>&1
     EXIT_CODE=$?
