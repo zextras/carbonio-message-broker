@@ -12,6 +12,7 @@ COPY --from=consul /bin/consul /usr/local/bin/consul
 
 # Setup script + entrypoint (COPY --chmod avoids a target-arch RUN — QEMU-free)
 COPY --chmod=755 package/carbonio-message-broker-setup-users /usr/local/bin/carbonio-message-broker-setup-users
+COPY --chmod=755 package/carbonio-message-broker-cleanup /usr/local/bin/carbonio-message-broker-cleanup
 COPY --chmod=755 docker/entrypoint.sh /usr/local/bin/carbonio-message-broker-entrypoint
 
 ENV CONSUL_SETUP=false
