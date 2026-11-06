@@ -8,10 +8,12 @@ MAIN_SERVICE_NAME="carbonio-message-broker"
 CONSUL_TOKEN_PATH="/etc/carbonio/message-broker/service-discover/token"
 RABBITMQ_NODE_NAME="carbonio-message-broker-clustered"
 
-if [[ $(id -u) -ne 0 ]]; then
-  echo "Please run as root"
+die() {
+  echo "$*" >&2
   exit 1
-fi
+}
+
+[[ $(id -u) -eq 0 ]] || die "Please run as root"
 
 export PATH="$PATH:/opt/zextras/common/bin"
 
@@ -19,42 +21,45 @@ kv_get() {
   consul kv get -token-file="$CONSUL_TOKEN_PATH" "$1" 2>/dev/null
 }
 
+kv_put() {
+  consul kv put -token-file="$CONSUL_TOKEN_PATH" "$@" >/dev/null
+}
+
 rmq() {
   rabbitmqctl --node "$RABBITMQ_NODE_NAME" "$@" >/dev/null 2>&1
 }
 
-setup_user() {
-  local key="$MAIN_SERVICE_NAME/$1" username=$2 tags=$3
-  local stored_username password
-  stored_username=$(kv_get "$key/username")
+# Consumers cache the password: reuse it, create it only if absent (a failed read looks like a missing key).
+ensure_kv_credentials() {
+  local key=$1 username=$2 password
+  [[ $(kv_get "$key/username") == "$username" ]] || kv_put "$key/username" "$username" || return 1
   password=$(kv_get "$key/password")
+  if [[ -z $password ]]; then
+    password=$(openssl rand -hex 16)
+    kv_put -cas -modify-index=0 "$key/password" "$password" || return 1
+  fi
+  echo "$password"
+}
 
-  if [[ -n $stored_username && -n $password ]] && rmq authenticate_user "$stored_username" "$password"; then
+reconcile_rabbit_user() {
+  local username=$1 password=$2 tags=$3
+  if rmq authenticate_user "$username" "$password"; then
     echo "User $username already exists"
+  elif rmq add_user "$username" "$password"; then
+    echo "User $username added"
   else
-    if [[ $stored_username != "$username" ]]; then
-      consul kv put -token-file="$CONSUL_TOKEN_PATH" "$key/username" "$username" || exit 1
-    fi
-    # Consumers cache this password: reuse it, and create it only if absent (a failed read looks like a missing key).
-    if [[ -z $password ]]; then
-      password=$(openssl rand -hex 16)
-      if ! consul kv put -token-file="$CONSUL_TOKEN_PATH" -cas -modify-index=0 "$key/password" "$password"; then
-        echo "Cannot store a new password for $username in Consul KV (already set or Consul unreachable), aborting"
-        exit 1
-      fi
-    fi
-    if rmq add_user "$username" "$password"; then
-      rmq set_permissions -p / "$username" ".*" ".*" ".*"
-      echo "User $username added"
-    else
-      rmq change_password "$username" "$password"
-      echo "Changed password for the user $username"
-    fi
+    rmq change_password "$username" "$password"
+    echo "Changed password for the user $username"
   fi
+  rmq set_permissions -p / "$username" ".*" ".*" ".*"
+  rmq set_user_tags "$username" ${tags:+"$tags"}
+}
 
-  if [[ -n $tags ]]; then
-    rmq set_user_tags "$username" "$tags"
-  fi
+setup_user() {
+  local key="$MAIN_SERVICE_NAME/$1" username=$2 tags=$3 password
+  password=$(ensure_kv_credentials "$key" "$username") \
+    || die "Cannot read or store credentials for $username in Consul KV, aborting"
+  reconcile_rabbit_user "$username" "$password" "$tags"
 }
 
 setup_user "default" "$MAIN_SERVICE_NAME" ""
