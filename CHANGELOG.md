@@ -1,3 +1,13 @@
+## [0.5.24](https://github.com/zextras/carbonio-message-broker/compare/v0.5.23...v0.5.24) (2026-11-06)
+
+### Bug Fixes
+
+* preserve the credentials stored in Consul KV ([#118](https://github.com/zextras/carbonio-message-broker/issues/118)) ([d0569b9](https://github.com/zextras/carbonio-message-broker/commit/d0569b94c7d2ca656de655ea8a5efbdcbfde5105))
+
+## [0.5.23](https://github.com/zextras/carbonio-message-broker/compare/v0.5.22...v0.5.23) (2026-11-05)
+
+## [0.5.22](https://github.com/zextras/carbonio-message-broker/compare/v0.5.21...v0.5.22) (2026-11-04)
+
 ## [0.5.21](https://github.com/zextras/carbonio-message-broker/compare/v0.5.20...v0.5.21) (2026-10-21)
 
 ## [0.5.20](https://github.com/zextras/carbonio-message-broker/compare/v0.5.19...v0.5.20) (2026-10-16)
