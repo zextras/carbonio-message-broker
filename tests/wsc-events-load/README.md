@@ -44,3 +44,14 @@ optionally a reconnect storm. Creates the `loadN@carbonio.localhost` accounts it
 NODE_TLS_REJECT_UNAUTHORIZED=0 node e2e-k3d.mjs --label main --kind room \
   --events 10,100,1000,10000 --users 6 --sessions 2 --storm 500 --out e2e.jsonl
 ```
+
+## Broker stall (`stall-k3d.mjs`)
+
+Reproduces CO-4512: pauses RabbitMQ with `SIGSTOP` from the k3d node (connections stay open),
+opens N WebSockets while it is paused, probes REST and `/health/live` of every WSC pod each second,
+resumes the broker and measures recovery. Set `carbonio-ws-collaboration/server/max-threads` low
+(e.g. 50) in Consul and restart WSC first to make thread exhaustion visible.
+
+```bash
+NODE_TLS_REJECT_UNAUTHORIZED=0 node stall-k3d.mjs --label main --sessions 300 --stall 45 --out stall.jsonl
+```
