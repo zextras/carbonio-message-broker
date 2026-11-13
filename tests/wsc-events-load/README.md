@@ -55,3 +55,17 @@ resumes the broker and measures recovery. Set `carbonio-ws-collaboration/server/
 ```bash
 NODE_TLS_REJECT_UNAUTHORIZED=0 node stall-k3d.mjs --label main --sessions 300 --stall 45 --out stall.jsonl
 ```
+
+## Meeting media monitor (`monitor-k3d.mjs`)
+
+Checks what the clients are told about meeting media (mic and camera): a new WebSocket gets only
+`WebsocketConnected`; with Janus paused (`SIGSTOP`, its broker connection stays open) every session
+gets `MessageBrokerDisconnected` within about a minute, meeting calls answer 424 and a WebSocket
+opened meanwhile gets `MessageBrokerDisconnected` right after `WebsocketConnected`; resuming Janus
+sends `MessageBrokerRestored`; closing the WSC consumer connection on the broker sends
+`MessageBrokerDisconnected` at once and `MessageBrokerRestored` once it recovers. Always resumes
+Janus on exit.
+
+```bash
+NODE_TLS_REJECT_UNAUTHORIZED=0 node monitor-k3d.mjs --label main --out monitor.jsonl
+```
