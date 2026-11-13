@@ -73,6 +73,16 @@ async function meetingCallStatus(user) {
   return res.status;
 }
 
+// with several WSC pods each one needs its own heartbeat, so calls can keep failing on another pod
+async function secondsUntilMeetingCallsAccepted(user, since, timeoutS) {
+  const deadline = at() + timeoutS;
+  while (at() < deadline) {
+    if ((await meetingCallStatus(user)) !== 424) return Number((at() - since).toFixed(1));
+    await sleep(500);
+  }
+  return null;
+}
+
 async function waitFor(session, type, count, timeoutS) {
   const deadline = at() + timeoutS;
   while (at() < deadline) {
@@ -125,9 +135,9 @@ const restoredA = await waitFor(a, "MessageBrokerRestored", 1, 60);
 const restoredB = await waitFor(b, "MessageBrokerRestored", 1, 5);
 results.restoredAfterResumeS = restoredA && Number((restoredA - resumedAt).toFixed(1));
 results.restoredReachedB = restoredB !== null;
-results.resumedMeetingCall = await meetingCallStatus(user);
+results.meetingCallsAcceptedAfterResumeS = await secondsUntilMeetingCallsAccepted(user, resumedAt, 60);
 log("restored after", results.restoredAfterResumeS, "s; B restored", results.restoredReachedB,
-  "; meeting call", results.resumedMeetingCall);
+  "; meeting calls accepted after", results.meetingCallsAcceptedAfterResumeS, "s");
 
 log("== 4. WSC consumer connection closed on the broker");
 const closed = closeWscConsumerConnections();
@@ -137,9 +147,9 @@ results.consumerConnectionsClosed = closed;
 results.disconnectedAfterCloseS = disconnected2 && Number((disconnected2 - closedAt).toFixed(1));
 const restored2 = await waitFor(a, "MessageBrokerRestored", 2, 60);
 results.restoredAfterCloseS = restored2 && Number((restored2 - closedAt).toFixed(1));
-results.finalMeetingCall = await meetingCallStatus(user);
+results.meetingCallsAcceptedAfterCloseS = await secondsUntilMeetingCallsAccepted(user, closedAt, 90);
 log("disconnected after", results.disconnectedAfterCloseS, "s; restored after", results.restoredAfterCloseS,
-  "s; meeting call", results.finalMeetingCall);
+  "s; meeting calls accepted after", results.meetingCallsAcceptedAfterCloseS, "s");
 
 a.ws.close();
 b.ws.close();
