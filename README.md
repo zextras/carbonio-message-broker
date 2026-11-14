@@ -9,6 +9,18 @@ Message broker through which Carbonio services exchange events.
 
 - Installation: [Carbonio CE guide](https://docs.zextras.com/carbonio-ce/html/install/toc.html)
 
+## Cluster
+
+Every node that installs the package joins the others through Consul: install it and run
+`pending-setups` on each node, one at a time.
+
+- Run 1, 3 or 5 nodes. A cluster needs a majority of its nodes up, so 2 nodes stop when either fails.
+- Brokers talk to each other outside the service mesh: open TCP 4369 and 25672 between broker nodes
+  only.
+- Every node must resolve the FQDN of the others.
+- Check membership with `rabbitmqctl cluster_status`.
+- Before removing a node for good, run `rabbitmqctl forget_cluster_node <node>` from another node.
+
 [contributors-badge]: https://img.shields.io/github/contributors/zextras/carbonio-message-broker "Contributors"
 [contributors]: https://github.com/zextras/carbonio-message-broker/graphs/contributors "Contributors"
 [activity-badge]: https://img.shields.io/github/commit-activity/m/zextras/carbonio-message-broker "Activity"
