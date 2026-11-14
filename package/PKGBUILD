@@ -92,7 +92,7 @@ sha256sums=(
   '347483c58c666973ffd45f6003b03405c9ce2e3c93153a671b144cbe901efdbc'
   'af0c08bb5e150f4032d7991953c8d7ad252c2e18f58a1e7eaa74e045ab1af1a8'
   '174b59c3be3c20770e18b6b746258620ce4d363c98aae5c10903cb69f72eab1c'
-  '070dd68fd7844f77db6f7bf470c59a66300b2d2ea920eaf25382e7b7a7c5d9c2'
+  'ec206f08e144209615db40f076c005cdc9cea2df2396153726c20826e85bf06f'
   'f15d8926d409d7489c600f88e0d78b10694bd01715175e25c2b6b0e2671d7c31'
   '8271d6beaef8cd4aa0941ae9cbb783003cf45d4933b4d043750ad9f3ebf272a6'
   '086ce28f73b947385ee8fcbb0eb43c0da61c2ab26db2ab9755a7a806c5533d65'
@@ -138,6 +138,9 @@ _package() {
 
   install -Dm644 "${srcdir}/rabbitmq-env.conf" \
     "${pkgdir}/etc/carbonio/message-broker/rabbitmq-env.conf"
+  # CLI tools read the env file from /etc/rabbitmq; the unit points the server to it
+  install -d "${pkgdir}/etc/rabbitmq"
+  ln -s /etc/carbonio/message-broker/rabbitmq-env.conf "${pkgdir}/etc/rabbitmq/rabbitmq-env.conf"
   install -Dm644 "${srcdir}/rabbitmq.conf" \
     "${pkgdir}/etc/carbonio/message-broker/conf.d/rabbitmq.conf"
   install -Dm644 "${srcdir}/default_schema.json" \
