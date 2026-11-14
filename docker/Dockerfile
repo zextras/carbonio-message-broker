@@ -1,6 +1,6 @@
 # Consul CLI stage: pinned to TARGETPLATFORM so the arm64 image gets the arm64
 # binary. No RUN in any target-platform stage — the build is QEMU-free.
-FROM --platform=$TARGETPLATFORM docker.io/hashicorp/consul:1.21 AS consul
+FROM --platform=$TARGETPLATFORM docker.io/hashicorp/consul:2.1 AS consul
 
 FROM docker.io/library/rabbitmq:4.2.5-management-alpine
 
