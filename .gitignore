@@ -7,4 +7,3 @@
 artifacts/
 *.rpm
 *.deb
-target/
