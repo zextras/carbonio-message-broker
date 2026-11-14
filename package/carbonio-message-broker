@@ -77,5 +77,6 @@ systemctl restart carbonio-message-broker.service
 systemctl restart carbonio-message-broker-sidecar.service
 
 carbonio-message-broker-setup-users
+carbonio-message-broker-cleanup
 
 trap - EXIT
