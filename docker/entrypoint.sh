@@ -8,7 +8,7 @@ write_cluster_cookie() {
   consul kv put -token-file="$TOKEN_FILE" -cas -modify-index=0 "$COOKIE_KEY" "$(openssl rand -hex 32)" >/dev/null 2>&1
   local cookie
   cookie=$(consul kv get -token-file="$TOKEN_FILE" "$COOKIE_KEY") && [ -n "$cookie" ] || return 1
-  (umask 077 && printf '%s' "$cookie" > "$HOME/.erlang.cookie")
+  printf '%s' "$cookie" > "$HOME/.erlang.cookie" && chmod 600 "$HOME/.erlang.cookie"
 }
 
 if [ "${CONSUL_SETUP}" != "false" ]; then
