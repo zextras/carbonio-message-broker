@@ -2,7 +2,7 @@
 # binary. No RUN in any target-platform stage — the build is QEMU-free.
 FROM --platform=$TARGETPLATFORM docker.io/hashicorp/consul:1.21 AS consul
 
-FROM docker.io/library/rabbitmq:4.2.5-management-alpine
+FROM docker.io/library/rabbitmq:4.4.0-management-alpine
 
 COPY docker/conf/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
 COPY docker/conf/default_schema.json /etc/rabbitmq/default_schema.json
