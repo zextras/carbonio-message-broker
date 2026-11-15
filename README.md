@@ -19,7 +19,17 @@ Every node that installs the package joins the others through Consul: install it
   only.
 - Every node must resolve the FQDN of the others.
 - Check membership with `rabbitmqctl cluster_status`.
-- Before removing a node for good, run `rabbitmqctl forget_cluster_node <node>` from another node.
+
+To remove a node for good, run on that node while every node is still up, then purge the package:
+
+```bash
+rabbitmq-queues shrink "$(rabbitmqctl eval 'node().' | tr -d "'")"  # move its queue replicas away
+rabbitmqctl stop_app
+rabbitmqctl reset                                                 # leave the cluster
+```
+
+Stopping or uninstalling the broker first leaves a 2-node cluster without a majority, and a reinstalled
+node that kept its old data cannot start.
 
 [contributors-badge]: https://img.shields.io/github/contributors/zextras/carbonio-message-broker "Contributors"
 [contributors]: https://github.com/zextras/carbonio-message-broker/graphs/contributors "Contributors"
