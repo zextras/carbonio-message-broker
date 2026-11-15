@@ -288,6 +288,15 @@ preinst() {
 }
 
 prerm() {
+  # yap runs prerm on uninstall only: leave the cluster while the node still runs
+  export PATH="$PATH:/opt/zextras/common/bin"
+  if node=$(rabbitmqctl eval 'node().' 2>/dev/null | tr -d "'") && [ -n "$node" ]; then
+    timeout 120 rabbitmq-queues shrink "$node" >/dev/null 2>&1 || :
+    timeout 60 rabbitmqctl stop_app >/dev/null 2>&1 || :
+    timeout 120 rabbitmqctl reset >/dev/null 2>&1 ||
+      echo "Could not leave the broker cluster: run 'rabbitmqctl forget_cluster_node ${node}' on another node"
+  fi
+
   if [ -d /run/systemd/system ]; then
     systemctl --no-reload disable carbonio-message-broker.service >/dev/null 2>&1 || :
     systemctl --no-reload disable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :
