@@ -2,8 +2,12 @@
 Description=Carbonio Message Broker Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
-After=network-online.target service-discover.service
-PartOf=service-discover.target
+After=network-online.target service-discover.service carbonio-message-broker.service
+PartOf=service-discover.target carbonio-message-broker.service
+# The token is written by the pending setup ("carbonio-<svc> setup") once
+# Consul is bootstrapped. Without it the sidecar cannot start: skip it
+# instead of failing every 15 s and holding up units ordered after it.
+ConditionPathExists=/etc/carbonio/message-broker/service-discover/token
 
 [Service]
 User=carbonio-message-broker
