@@ -1,5 +1,7 @@
 FROM registry.dev.zextras.com/dev/carbonio-sidecar:main
 
+RUN useradd -r -U carbonio-message-broker
+
 # Service registration
 COPY package/carbonio-message-broker.hcl /consul/config/
 

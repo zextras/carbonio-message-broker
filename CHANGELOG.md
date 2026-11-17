@@ -1,3 +1,17 @@
+## [0.5.27](https://github.com/zextras/carbonio-message-broker/compare/v0.5.26...v0.5.27) (2026-11-17)
+
+### Bug Fixes
+
+* [CO-3502] bind the message-broker sidecar to its service lifecycle ([#125](https://github.com/zextras/carbonio-message-broker/issues/125)) ([92b5425](https://github.com/zextras/carbonio-message-broker/commit/92b5425532299cc49c8a7654190a25a20f48c2a0))
+
+## [0.5.26](https://github.com/zextras/carbonio-message-broker/compare/v0.5.25...v0.5.26) (2026-11-17)
+
+## [0.5.25](https://github.com/zextras/carbonio-message-broker/compare/v0.5.24...v0.5.25) (2026-11-13)
+
+### Bug Fixes
+
+* **docker:** create sidecar system users - CO-3612 ([#122](https://github.com/zextras/carbonio-message-broker/issues/122)) ([b88aa1e](https://github.com/zextras/carbonio-message-broker/commit/b88aa1e00612148ffb65c62b584a6d71bd68df1f))
+
 ## [0.5.24](https://github.com/zextras/carbonio-message-broker/compare/v0.5.23...v0.5.24) (2026-11-06)
 
 ### Bug Fixes
