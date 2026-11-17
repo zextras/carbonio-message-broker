@@ -10,6 +10,7 @@ services {
       http     = "http://127.78.0.18:15692/metrics/detailed?family=queue_coarse_metrics"
       timeout  = "2s"
       interval = "5s"
+      failures_before_critical = 2
     },
   ]
   connect {
