@@ -2,7 +2,7 @@
 Description=Carbonio Message Broker Daemon
 Requires=network-online.target
 After=network.target epmd@0.0.0.0.socket
-Wants=network.target epmd@0.0.0.0.socket
+Wants=network.target epmd@0.0.0.0.socket carbonio-message-broker-sidecar.service
 PartOf=carbonio-directory-server.target
 
 [Service]
