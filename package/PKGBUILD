@@ -8,7 +8,7 @@ arch=('any')
 license=("MPL-2.0")
 section="utils"
 priority="optional"
-_tag=4.2.5
+_tag=4.4.0
 depends__apt=(
   "adduser"
   "carbonio-erlang"
@@ -75,25 +75,25 @@ backup=(
   "etc/zextras/service-discover/${pkgname}.hcl"
 )
 sha256sums=(
-  '708fe298b5f8a5d6539751c329a1365b038e696a700bbf0acaa5879b1b05423d'
+  'e6fb6eb6b0d26d96efe7e726f694d19a9c1cd89bbe9344a8bfd4c020095a6278'
   '51b9ccd75a832f2cc8840b7f83e2727b58ec5d8239354357d648f9965c902e47'
   '9dbc0f39499377a1e289cb5164fd2e516d8e5bf1d0f35c0885272fde359f2abc'
-  '44d353f4b2bde3ed206f773df61c99bc593e54e4fb06e78c3dada422b3689e23'
+  '49ee8e354564a92c84bc6e9d962ec3636e5a171fd998467ecf97e2293f4d701c'
   '8e766c95b17507e27c269e5e80d9f174b4e27063a1d2dafb43f62e6b4d5aa422'
   'b14a52210ecad28934bebec41304abd53b408c51c0f2c3fdf00730614031e52c'
   'a7d078b91d8704b92d49a7a00a06be70d94059b98eb8490ce242f0107d88e008'
-  '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
+  'e47fdfe6c9d9df1861c1fbe5e64879c4c624a7de829d72c99c5e4002972022b2'
   'bf1761f8c7ae56ae8e7f41d3c7c2166ffaf06ae030ffae04aeef133e7779f3dd'
   '5d8d96176c7f66be0d36361c788cfd2b2885ee2d97d3d4b8432745789a8fd4b5'
   'eb5dd87741f56b75ab71fd8fad7ceaadb2dbaa17a258873d2ba6ecf721c1647c'
   '4ec3384cb0711ab84c563c15a5733a8018c671831a8728eb0d69f0353075eac0'
   '747e02b96333eaa47bd33fb9d5d1a626cbda584021a2a9331ad37d7fdde487d0'
-  'a7337713ea39e4bfb2e72529006204d546336d71594b587c4e2d92e0dcaead8c'
+  'c8389cd65ac526b40136d817de73f660eee9fbffdcda8aa41b29eb111592b0cc'
   '347483c58c666973ffd45f6003b03405c9ce2e3c93153a671b144cbe901efdbc'
   'af0c08bb5e150f4032d7991953c8d7ad252c2e18f58a1e7eaa74e045ab1af1a8'
   '174b59c3be3c20770e18b6b746258620ce4d363c98aae5c10903cb69f72eab1c'
-  '070dd68fd7844f77db6f7bf470c59a66300b2d2ea920eaf25382e7b7a7c5d9c2'
-  '1c5852054ebc476ce75f36eaef5cb469d239f4b778c097a0c46b039ac84d1efb'
+  'ec206f08e144209615db40f076c005cdc9cea2df2396153726c20826e85bf06f'
+  '9cdafcbdf69261c0a30d932a7a7f8d55871e8a87c33b5ab04ca17691bce4147d'
   '8271d6beaef8cd4aa0941ae9cbb783003cf45d4933b4d043750ad9f3ebf272a6'
   '086ce28f73b947385ee8fcbb0eb43c0da61c2ab26db2ab9755a7a806c5533d65'
 )
@@ -138,6 +138,9 @@ _package() {
 
   install -Dm644 "${srcdir}/rabbitmq-env.conf" \
     "${pkgdir}/etc/carbonio/message-broker/rabbitmq-env.conf"
+  # CLI tools read the env file from /etc/rabbitmq; the unit points the server to it
+  install -d "${pkgdir}/etc/rabbitmq"
+  ln -s /etc/carbonio/message-broker/rabbitmq-env.conf "${pkgdir}/etc/rabbitmq/rabbitmq-env.conf"
   install -Dm644 "${srcdir}/rabbitmq.conf" \
     "${pkgdir}/etc/carbonio/message-broker/conf.d/rabbitmq.conf"
   install -Dm644 "${srcdir}/default_schema.json" \
@@ -285,6 +288,15 @@ preinst() {
 }
 
 prerm() {
+  # yap runs prerm on uninstall only: leave the cluster while the node still runs
+  export PATH="$PATH:/opt/zextras/common/bin"
+  if node=$(rabbitmqctl eval 'node().' 2>/dev/null | tr -d "'") && [ -n "$node" ]; then
+    timeout 120 rabbitmq-queues shrink "$node" >/dev/null 2>&1 || :
+    timeout 60 rabbitmqctl stop_app >/dev/null 2>&1 || :
+    timeout 120 rabbitmqctl reset >/dev/null 2>&1 ||
+      echo "Could not leave the broker cluster: run 'rabbitmqctl forget_cluster_node ${node}' on another node"
+  fi
+
   if [ -d /run/systemd/system ]; then
     systemctl --no-reload disable carbonio-message-broker.service >/dev/null 2>&1 || :
     systemctl --no-reload disable carbonio-message-broker-sidecar.service >/dev/null 2>&1 || :

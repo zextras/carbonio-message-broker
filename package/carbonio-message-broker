@@ -69,6 +69,16 @@ fi
 
 consul reload
 
+# Every broker node must share the Erlang cookie: the first node stores its own, the others take it.
+COOKIE_KEY="carbonio-message-broker-clustered/erlang-cookie"
+COOKIE_FILE="/var/lib/carbonio-message-broker/.erlang.cookie"
+{ cat "${COOKIE_FILE}" 2>/dev/null || openssl rand -hex 32; } |
+  consul kv put -cas -modify-index=0 "${COOKIE_KEY}" - >/dev/null 2>&1 || true
+COOKIE=$(consul kv get "${COOKIE_KEY}")
+(umask 077 && printf '%s' "${COOKIE}" >"${COOKIE_FILE}")
+chown carbonio-message-broker:carbonio-message-broker "${COOKIE_FILE}"
+chmod 0400 "${COOKIE_FILE}"
+unset COOKIE
 
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
