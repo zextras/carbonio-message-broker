@@ -77,5 +77,7 @@ systemctl restart carbonio-message-broker.service
 systemctl restart carbonio-message-broker-sidecar.service
 
 carbonio-message-broker-setup-users
+# best effort, and minutes long with many legacy exchanges: it must neither fail nor block the setup
+nohup carbonio-message-broker-cleanup >>/var/log/carbonio/message-broker/cleanup.log 2>&1 &
 
 trap - EXIT

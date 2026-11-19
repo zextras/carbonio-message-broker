@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Per-user exchanges left by carbonio-ws-collaboration < CO-4512; only deleted once nothing is bound.
+RABBITMQ_COMMANDS_FOLDER="/opt/zextras/common/bin"
+RABBITMQ_NODE_NAME="carbonio-message-broker-clustered"
+
+export PATH="$PATH:$RABBITMQ_COMMANDS_FOLDER"
+
+rabbitmqctl eval --node "$RABBITMQ_NODE_NAME" '
+  Uuid = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+  Legacy = [XName || X <- rabbit_exchange:list(<<"/">>),
+    [{name, XName = {resource, _, exchange, Name}}, {type, direct}, {durable, false}]
+      <- [rabbit_exchange:info(X, [name, type, durable])],
+    re:run(Name, Uuid) =/= nomatch],
+  Deleted = [XName || XName <- Legacy,
+    rabbit_exchange:delete(XName, true, <<"carbonio-message-broker">>) =:= ok],
+  {legacy_ws_collaboration_exchanges, {found, length(Legacy)}, {deleted, length(Deleted)}}.'
