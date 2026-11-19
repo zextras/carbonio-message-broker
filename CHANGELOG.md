@@ -1,3 +1,9 @@
+## [0.5.29](https://github.com/zextras/carbonio-message-broker/compare/v0.5.28...v0.5.29) (2026-11-19)
+
+### Bug Fixes
+
+* **setup:** delete legacy ws-collaboration per-user exchanges ([#121](https://github.com/zextras/carbonio-message-broker/issues/121)) ([6df1147](https://github.com/zextras/carbonio-message-broker/commit/6df11474fa4f453bfd03ed7777a844fd3258a75e))
+
 ## [0.5.28](https://github.com/zextras/carbonio-message-broker/compare/v0.5.27...v0.5.28) (2026-11-19)
 
 ## [0.5.27](https://github.com/zextras/carbonio-message-broker/compare/v0.5.26...v0.5.27) (2026-11-17)
