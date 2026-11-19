@@ -1,3 +1,5 @@
+## [0.5.28](https://github.com/zextras/carbonio-message-broker/compare/v0.5.27...v0.5.28) (2026-11-19)
+
 ## [0.5.27](https://github.com/zextras/carbonio-message-broker/compare/v0.5.26...v0.5.27) (2026-11-17)
 
 ### Bug Fixes
