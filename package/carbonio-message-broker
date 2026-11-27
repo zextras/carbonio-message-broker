@@ -18,7 +18,6 @@ if [[ "$1" != "setup" ]]; then
 fi
 
 if command -v carbonio-message-broker-hcl > /dev/null; then
-  carbonio-message-broker-hcl migrate || :
   if ! carbonio-message-broker-hcl render; then
     echo "Cannot render /etc/zextras/service-discover/carbonio-message-broker.hcl; leaving pending-setup to be retried."
     exit 1
