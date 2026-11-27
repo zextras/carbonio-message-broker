@@ -87,7 +87,7 @@ sha256sums=(
   'b14a52210ecad28934bebec41304abd53b408c51c0f2c3fdf00730614031e52c'
   'a7d078b91d8704b92d49a7a00a06be70d94059b98eb8490ce242f0107d88e008'
   '5b372f548acb9de22d5f007070d2e041101c21e0513f1c29d22c088ff17b3bab'
-  '7c0d3f3d6e45913072c59860628fc2e754001aadb95763d9350003b14f52f42c'
+  '17001ea41baef1acc286becf5bc2a454f7291f47017d896c766590edc5d9a81c'
   'bf1761f8c7ae56ae8e7f41d3c7c2166ffaf06ae030ffae04aeef133e7779f3dd'
   '5d8d96176c7f66be0d36361c788cfd2b2885ee2d97d3d4b8432745789a8fd4b5'
   'eb5dd87741f56b75ab71fd8fad7ceaadb2dbaa17a258873d2ba6ecf721c1647c'
@@ -280,7 +280,7 @@ postrm__apt() {
   rm -f /etc/carbonio/message-broker/service-discover/token
   rm -f /etc/zextras/service-discover/carbonio-message-broker.hcl
   if [ "$1" = "purge" ]; then
-    rm -f /etc/zextras/service-discover/carbonio-message-broker.env /etc/zextras/service-discover/carbonio-message-broker.hcl.bak
+    rm -f /etc/zextras/service-discover/carbonio-message-broker.env
   fi
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
