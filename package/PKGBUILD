@@ -20,6 +20,7 @@ depends__apt=(
   "python3"
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
   "socat"
 )
 makedepends__apt=(
@@ -36,6 +37,7 @@ depends__yum=(
   "python3"
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
   "socat"
 )
 makedepends__yum=(
@@ -54,7 +56,7 @@ source=(
   "${pkgname}-setup-users"
   "${pkgname}-sidecar.service"
   "${pkgname}-sidecar-legacy.service"
-  "${pkgname}.hcl"
+  "${pkgname}-template.hcl"
   "${pkgname}.logrotate"
   "${pkgname}.service"
   "${pkgname}-legacy.service"
@@ -73,18 +75,17 @@ backup=(
   "etc/carbonio/message-broker/enabled_plugins"
   "etc/carbonio/message-broker/rabbitmq-env.conf"
   "etc/carbonio/message-broker/conf.d/rabbitmq.conf"
-  "etc/zextras/service-discover/${pkgname}.hcl"
 )
 sha256sums=(
   '708fe298b5f8a5d6539751c329a1365b038e696a700bbf0acaa5879b1b05423d'
   '51b9ccd75a832f2cc8840b7f83e2727b58ec5d8239354357d648f9965c902e47'
   '9dbc0f39499377a1e289cb5164fd2e516d8e5bf1d0f35c0885272fde359f2abc'
-  '3d29393591a33381a1c2d4024c120c39a9b6b6470496a5ac873d2e0230a7dcf8'
+  '9cc7ddaa39f610e2342c8c5697fcad511582e6fb90f77056eb3dc5298072fbea'
   '2389b35d8f79dfd73936b6ac9691f3ec11c0040703adba93c35af6147cbbd3b1'
   '8e766c95b17507e27c269e5e80d9f174b4e27063a1d2dafb43f62e6b4d5aa422'
   'b14a52210ecad28934bebec41304abd53b408c51c0f2c3fdf00730614031e52c'
   'a7d078b91d8704b92d49a7a00a06be70d94059b98eb8490ce242f0107d88e008'
-  '264477a1737dd47416e35452c43a0972e422ace5ea2b8641823e9978afd536a2'
+  'd348b5179f21925eebf140f5e8a608b7fd76b58a44661c051f323b9d30f1c60c'
   'bf1761f8c7ae56ae8e7f41d3c7c2166ffaf06ae030ffae04aeef133e7779f3dd'
   '5d8d96176c7f66be0d36361c788cfd2b2885ee2d97d3d4b8432745789a8fd4b5'
   'eb5dd87741f56b75ab71fd8fad7ceaadb2dbaa17a258873d2ba6ecf721c1647c'
@@ -162,8 +163,8 @@ _package() {
     "${pkgdir}/etc/carbonio/message-broker/service-discover/policies.json"
   install -Dm644 service-protocol.json \
     "${pkgdir}/etc/carbonio/message-broker/service-discover/service-protocol.json"
-  install -Dm644 ${pkgname}.hcl \
-    "${pkgdir}/etc/zextras/service-discover/${pkgname}.hcl"
+  install -Dm644 ${pkgname}-template.hcl \
+    "${pkgdir}/etc/zextras/service-discover/templates/${pkgname}-template.hcl"
   install -Dm644 carbonio-prometheus-rabbit-exporter.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-prometheus-rabbit-exporter.hcl"
   install -Dm755 ${pkgname} \
@@ -265,6 +266,10 @@ postrm__apt() {
   fi
 
   rm -f /etc/carbonio/message-broker/service-discover/token
+  rm -f /etc/zextras/service-discover/carbonio-message-broker.hcl
+  if [ "$1" = "purge" ]; then
+    rm -f /etc/zextras/service-discover/carbonio-message-broker.env
+  fi
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi
@@ -272,6 +277,7 @@ postrm__apt() {
 
 postrm__yum() {
   rm -f /etc/carbonio/message-broker/service-discover/token
+  rm -f /etc/zextras/service-discover/carbonio-message-broker.hcl
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi

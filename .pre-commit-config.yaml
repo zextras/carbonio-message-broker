@@ -61,6 +61,7 @@ repos:
 
   - repo: local
     hooks:
+
       - id: checksum-verify-pkgbuild
         name: checksum-verify-pkgbuild
         description: "Verifies and autofixes package/PKGBUILD sha256sums; SKIP entries for remote/versioned sources stay untouched."

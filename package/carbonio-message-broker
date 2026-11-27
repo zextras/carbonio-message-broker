@@ -17,6 +17,17 @@ if [[ "$1" != "setup" ]]; then
   exit 1;
 fi
 
+if [ -f /etc/zextras/service-discover/templates/carbonio-message-broker-template.hcl ]; then
+  # shellcheck disable=SC2016
+  if ! env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
+    /etc/zextras/service-discover/carbonio-message-broker.env \
+    /etc/zextras/service-discover/templates/carbonio-message-broker-template.hcl \
+    /etc/zextras/service-discover/carbonio-message-broker.hcl > /dev/null; then
+    echo "Cannot render /etc/zextras/service-discover/carbonio-message-broker.hcl; leaving pending-setup to be retried."
+    exit 1
+  fi
+fi
+
 # Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
@@ -81,3 +92,18 @@ carbonio-message-broker-setup-users
 nohup carbonio-message-broker-cleanup >>/var/log/carbonio/message-broker/cleanup.log 2>&1 &
 
 trap - EXIT
+
+rc=$?
+cat << 'EOF'
+
+Sidecar Config (overridable by /etc/zextras/service-discover/carbonio-message-broker.env, apply with carbonio-message-broker setup)
+
+┌────────────────┬─────────┐
+│ Key            │ Default │
+├────────────────┼─────────┤
+│ CHECK_TIMEOUT  │ 1s      │
+│ CHECK_INTERVAL │ 5s      │
+└────────────────┴─────────┘
+
+EOF
+exit "${rc}"
