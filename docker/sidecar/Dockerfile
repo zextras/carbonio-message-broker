@@ -1,9 +1,15 @@
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3.20 AS hcl
+COPY package/carbonio-message-broker-template.hcl /carbonio-message-broker-template.hcl
+RUN sed -E 's/\{\{ or \(env "[A-Z0-9_]+"\) "([^"]*)" \}\}/\1/g' \
+    /carbonio-message-broker-template.hcl > /carbonio-message-broker.hcl \
+    && ! grep -q '{{' /carbonio-message-broker.hcl
+
 FROM registry.dev.zextras.com/dev/carbonio-sidecar:main
 
 RUN useradd -r -U carbonio-message-broker
 
 # Service registration
-COPY package/carbonio-message-broker.hcl /consul/config/
+COPY --from=hcl /carbonio-message-broker.hcl /consul/config/
 
 # Setup files
 COPY package/service-protocol.json /etc/carbonio/message-broker/service-discover/

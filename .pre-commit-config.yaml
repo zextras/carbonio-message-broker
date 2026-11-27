@@ -61,6 +61,14 @@ repos:
 
   - repo: local
     hooks:
+      - id: test-hcl-template
+        name: test-hcl-template
+        description: Tests the hcl template render and migration script.
+        entry: bash .ci/test-hcl-template.sh
+        language: system
+        pass_filenames: false
+        files: ^(package/carbonio-message-broker(-hcl|-template\.hcl)?|\.ci/test-hcl-template\.sh)$
+
       - id: checksum-verify-pkgbuild
         name: checksum-verify-pkgbuild
         description: "Verifies and autofixes package/PKGBUILD sha256sums; SKIP entries for remote/versioned sources stay untouched."
