@@ -20,6 +20,7 @@ depends__apt=(
   "python3"
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
   "socat"
 )
 makedepends__apt=(
@@ -36,6 +37,7 @@ depends__yum=(
   "python3"
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
   "socat"
 )
 makedepends__yum=(
